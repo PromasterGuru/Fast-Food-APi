@@ -65,13 +65,19 @@ class Order(Orders):
     '''Holds API endpoints with specific orders'''
 
 
-    def get(self,orderId):
-        '''Fetch a specific order'''
-        food_orders = self.orders.get_orders()
-        order = [order for order in food_orders if order['id'] == orderId]
+    food_orders = Orders.orders.get_orders()
+
+    def validate_request(self,orderId):
+        order = [order for order in self.food_orders if order['id'] == orderId]
         if not order:
             abort(404) #Not Found
-        result = {"Order": order}
+        else:
+            return order
+
+    def get(self,orderId):
+        '''Fetch a specific order'''
+        self.validate_request(orderId)
+        result = {"Order": self.validate_request(orderId)}
         response = jsonify(result)
         response.status_code = 200 #OK
         return response
