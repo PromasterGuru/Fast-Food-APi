@@ -17,7 +17,6 @@ from app import app
 #api_url = Blueprint('api', __name__)
 api = Api(app)
 
-
 class Resource(Resource):
     """Throws a method not allowed error"""
     def get(self, *args, **kwargs):
@@ -26,7 +25,9 @@ class Resource(Resource):
 
 
 class Orders(Resource):
-    """Class that holds the API endpoints"""
+    """Class that holds the API endpoints that deals with multiple orders"""
+
+
 
     orders = FoodOrders()
 
@@ -59,7 +60,24 @@ class Orders(Resource):
         response.status_code = 201 #Created
         return response
 
+
+class Order(Orders):
+    '''Holds API endpoints with specific orders'''
+
+
+    def get(self,orderId):
+        '''Fetch a specific order'''
+        food_orders = self.orders.get_orders()
+        order = [order for order in food_orders if order['id'] == orderId]
+        if not order:
+            abort(404) #Not Found
+        result = {"Order": order}
+        response = jsonify(result)
+        response.status_code = 200 #OK
+        return response
+
 api.add_resource(Orders,'/api/v1/orders')
+api.add_resource(Order,'/api/v1/orders/<int:orderId>')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
