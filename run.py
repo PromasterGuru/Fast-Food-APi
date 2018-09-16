@@ -1,14 +1,10 @@
-#run.def
+# run.py
 
 '''
 Debug the app.
 '''
-
 import os
-from app import create_app
-
-app_config_name = os.getenv('FLASK_ENV')
-app = create_app(app_config_name)
+from app import app
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

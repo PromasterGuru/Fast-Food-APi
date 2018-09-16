@@ -4,14 +4,14 @@
 Initalize the app and load configurations
 """
 
-from flask_api import FlaskAPI
+import os
 from instance.config import my_app_config
+from flask import Flask
 
+app = Flask(__name__, instance_relative_config=True)
 
-def create_app(app_config_name):
-    """Wraps the creation of a new Flask object"""
-    app = FlaskAPI(__name__, instance_relative_config=True)
-    app.config.from_object(my_app_config[app_config_name])
-    app.config.from_pyfile('config.py')
+# Load the views
+from app.api.v1 import views
 
-    return app #return app after loading all the configurations settings
+# Load the config file
+app.config.from_object(my_app_config[os.getenv('FLASK_ENV')])
