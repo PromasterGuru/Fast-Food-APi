@@ -89,6 +89,15 @@ class Order(Orders):
         response = jsonify(result)
         response.status_code = 200 #OK
 
+    def delete(self,orderId):
+        '''Delete an order'''
+        self.food_orders.remove(
+                                self.validate_request(orderId)[0]
+                                )
+        result = {"Result": self.validate_request(orderId)[0]
+        response = jsonify(result)
+        response.status_code = 200 #OK
+
 api.add_resource(Orders,'/api/v1/orders')
 api.add_resource(Order,'/api/v1/orders/<int:orderId>')
 
