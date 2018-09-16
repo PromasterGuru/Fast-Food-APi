@@ -82,6 +82,13 @@ class Order(Orders):
         response.status_code = 200 #OK
         return response
 
+    def put(self,orderId):
+        '''Update the status of an order.'''
+        self.validate_request(orderId)[0]['status'] = request.json['status']
+        result = {"Order": self.validate_request(orderId)[0]}
+        response = jsonify(result)
+        response.status_code = 200 #OK
+
 api.add_resource(Orders,'/api/v1/orders')
 api.add_resource(Order,'/api/v1/orders/<int:orderId>')
 
