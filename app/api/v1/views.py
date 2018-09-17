@@ -5,28 +5,56 @@ Implementation of API EndPoint
 '''
 import os
 import datetime
+import hashlib
 from flask import jsonify
 from flask import request
 from flask import abort
-#from flask import Blueprint
 from flask_restful import Resource
 from flask_restful import Api
 from .models import FoodOrders
 from app import app
 
-#api_url = Blueprint('api', __name__)
-api = Api(app)
+api = Api(app, prefix="/api/v1")
 
 class Resource(Resource):
-    """Throws a method not allowed error"""
+
+
+    """Throws error messages"""
     def get(self, *args, **kwargs):
         """Abort with error code 405"""
         abort(405)
 
 
+class Authentication(Resource):
+    """Authenticates users"""
+
+
+    users = FoodOrders()
+
+    def validate_credentials(self):
+        '''Validate user inputs'''
+        if (not request.json or not "username" in request.json
+                             or not "password" in request.json
+                             ):
+                             abort(400)
+
+    def post(self):
+        '''Register new users'''
+        self.validate_credentials()
+        uname = request.json['username']
+        password = hashlib.md5(request.json['password'].encode()).hexdigest()
+        if uname in self.users.get_users():
+            abort(401) #An authorized
+        else:
+            self.users.set_users(uname,password)
+            result = {"User":self.users.get_users()}
+            response = jsonify(result)
+            response.status_code = 201 #Created
+            return response
+
+
 class Orders(Resource):
     """Class that holds the API endpoints that deals with multiple orders"""
-
 
 
     orders = FoodOrders()
@@ -54,7 +82,7 @@ class Orders(Resource):
     	    "order_date":str(datetime.datetime.now())[:19],
             "status": "Pedding"
         }
-        self.orders.get_orders().append(new_order)
+        self.orders.set_orders(new_order)
         result = {"Order": new_order}
         response = jsonify(result)
         response.status_code = 201 #Created
@@ -84,8 +112,9 @@ class Order(Orders):
 
     def put(self,orderId):
         '''Update the status of an order.'''
-        self.validate_request(orderId)[0]['status'] = request.json['status']
-        result = {"Order": self.validate_request(orderId)[0]}
+        order = self.validate_request(orderId)
+        order[0]['status'] = request.json['status']
+        result = {"Order": order}
         response = jsonify(result)
         response.status_code = 200 #OK
 
@@ -94,12 +123,13 @@ class Order(Orders):
         self.food_orders.remove(
                                 self.validate_request(orderId)[0]
                                 )
-        result = {"Result": self.validate_request(orderId)[0]
+        result = {"Result": self.validate_request(orderId)[0]}
         response = jsonify(result)
         response.status_code = 200 #OK
 
-api.add_resource(Orders,'/api/v1/orders')
-api.add_resource(Order,'/api/v1/orders/<int:orderId>')
+api.add_resource(Authentication,'/register')
+api.add_resource(Orders,'/orders')
+api.add_resource(Order,'/orders/<int:orderId>')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
