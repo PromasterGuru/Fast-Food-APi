@@ -7,7 +7,7 @@ class Config():
     """Parent class with default setting configurations"""
     DEBUG = False
     CSRF_ENABLED = True
-    SECRET = os.getenv('SECRET')
+    SECRET_KEY = os.getenv('SECRET')
 
 
 class DevelopmentConfig(Config):

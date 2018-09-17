@@ -4,7 +4,10 @@
 Debug the app.
 '''
 import os
-from app import app
+from app import create_app
+
+my_app_config = os.getenv('APP_SETTINGS')
+app = create_app(my_app_config)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
