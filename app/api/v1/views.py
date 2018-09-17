@@ -6,15 +6,14 @@ Implementation of API EndPoint
 import os
 import datetime
 import hashlib
-from flask import jsonify
-from flask import request
-from flask import abort
-from flask_restful import Resource
-from flask_restful import Api
-from .models import FoodOrders
-from app import app
+from flask import jsonify,request,abort
+from flask_restful import Resource,Api
+from flask_httpauth import HTTPDigestAuth
 
-api = Api(app, prefix="/api/v1")
+#local imports
+from .models import FoodOrders
+
+auth = HTTPDigestAuth()
 
 class Resource(Resource):
 
@@ -25,8 +24,8 @@ class Resource(Resource):
         abort(405)
 
 
-class Authentication(Resource):
-    """Authenticates users"""
+class Register(Resource):
+    """Resigsters new users"""
 
 
     users = FoodOrders()
@@ -47,10 +46,29 @@ class Authentication(Resource):
             abort(401) #An authorized
         else:
             self.users.set_users(uname,password)
-            result = {"User":self.users.get_users()}
+            result = {"User":"You have successfully registered as "+uname}
             response = jsonify(result)
             response.status_code = 201 #Created
             return response
+
+
+class Login(Register):
+    '''Authenticates users'''
+
+
+    @auth.get_password
+    def get(self,username,password):
+        '''Login'''
+        if not(username or password):
+            abort(400) #Bad request
+        elif username not in self.users.get_users():
+            abort(401) #An authorized
+        else:
+            uname = username
+            password = hashlib.md5(password.encode()).hexdigest()
+            if self.users.get_users()[uname] == password:
+                return True
+            return False
 
 
 class Orders(Resource):
@@ -59,6 +77,7 @@ class Orders(Resource):
 
     orders = FoodOrders()
 
+    #@auth.login_required
     def get(self):
         '''Get all the orders.'''
         result = {"Orders": self.orders.get_orders()}
@@ -126,11 +145,3 @@ class Order(Orders):
         result = {"Result": self.validate_request(orderId)[0]}
         response = jsonify(result)
         response.status_code = 200 #OK
-
-api.add_resource(Authentication,'/register')
-api.add_resource(Orders,'/orders')
-api.add_resource(Order,'/orders/<int:orderId>')
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
