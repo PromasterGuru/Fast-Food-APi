@@ -70,9 +70,14 @@ class Login(Register):
             uname = username
             password = hashlib.md5(password.encode()).hexdigest()
             if self.users.get_users()[uname] == password:
-                return True
-            return False
-
+                result = {"Success": "You have logged in successfully"}
+                response = jsonify(result)
+                response.status_code = 200 #OK
+            else:
+                result = {"Failed": "Username or password was incorrect!"}
+                response = jsonify(result)
+                response.status_code = 401 #An authorized
+            return response
 
 class Orders(Resource):
     """Class that holds the API endpoints that deals with multiple orders"""
@@ -139,6 +144,7 @@ class Order(Orders):
         result = {"Order": order}
         response = jsonify(result)
         response.status_code = 200 #OK
+        return response
 
     def delete(self,orderId):
         '''Delete an order'''
@@ -148,3 +154,4 @@ class Order(Orders):
         result = {"Result": "Order deleted successfully"}
         response = jsonify(result)
         response.status_code = 200 #OK
+        return response
