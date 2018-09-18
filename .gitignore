@@ -1,11 +1,10 @@
 __pycache__/
 htmlcov
 venv
+instance
 .env
 .coverage
 *.pyc
 *.py[cod]
 *$py.class
 .pytest_cache/
-instance
-config.py
