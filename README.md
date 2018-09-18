@@ -42,6 +42,16 @@ Creates a set of API endpoints already defined below and use data structures to 
     <td>DELETE</td>
     <td>/api/v1/orders/orderId</td>
   </tr>
+  <tr>
+    <td>Register for a new account</td>
+    <td>POST</td>
+    <td>/api/v1/register</td>
+  </tr>
+  <tr>
+    <td>Login to an account</td>
+    <td>GET</td>
+    <td>/api/v1/login/username/<username>/password/<password></td>
+  </tr>
 </table>
 
 <h2> How to compile and run locally </h2>
