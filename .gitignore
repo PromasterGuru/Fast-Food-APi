@@ -7,4 +7,5 @@ venv
 *.py[cod]
 *$py.class
 .pytest_cache/
-instance/
+instance
+config.py
