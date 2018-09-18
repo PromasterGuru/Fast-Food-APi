@@ -10,7 +10,7 @@ install:
 
 #Run tests
 script:
-  - coverage run -m pytest tests/*.py
+  - coverage run -m pytest -v app/tests/v1/test*
 
 after_success:
   - coveralls
