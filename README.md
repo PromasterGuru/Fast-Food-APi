@@ -50,7 +50,7 @@ Creates a set of API endpoints already defined below and use data structures to 
   <tr>
     <td>Login to an account</td>
     <td>GET</td>
-    <td>/api/v1/login></td>
+    <td>/api/v1/login/username/user_username/password/user_password></td>
   </tr>
 </table>
 
