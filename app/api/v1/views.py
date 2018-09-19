@@ -3,28 +3,15 @@
 '''
 Implementation of API EndPoint
 '''
-import os
+import re
 import datetime
 import hashlib
-from flask import jsonify
-from flask import request
-from flask import abort
-from flask_httpauth import HTTPDigestAuth
+from flask import jsonify, request, abort
 from flask_restful import Resource
-from flask_restful import Api
+
 
 #local import
 from .models import FoodOrders
-
-auth = HTTPDigestAuth()
-
-class Resource(Resource):
-
-
-    """Throws error messages"""
-    def get(self, *args, **kwargs):
-        """Abort with error code 405"""
-        abort(405)
 
 
 class Register(Resource):
@@ -33,51 +20,77 @@ class Register(Resource):
 
     users = FoodOrders()
 
-    def validate_credentials(self):
-        '''Validate user inputs'''
-        if (not request.json or not "username" in request.json
-                             or not "password" in request.json
-                             ):
-                             abort(400)
-
     def post(self):
         '''Register new users'''
-        self.validate_credentials()
-        uname = request.json['username']
-        password = hashlib.md5(request.json['password'].encode()).hexdigest()
-        if uname in self.users.get_users():
-            abort(401) #An authorized
-        else:
-            self.users.set_users(uname,password)
-            result = {"User":"You have successfully registered as "+uname}
+        if (not request.json
+                or not "username" in request.json
+                or not "password" in request.json
+           ):
+            result = {"Message": "Invalid username or password"}
             response = jsonify(result)
-            response.status_code = 201 #Created
-            return response
+            response.status_code = 400 #Bad request
+        else:
+            uname = request.json['username']
+            password = request.json['password']
+            if not uname:
+                result = {"Message": "Please enter your username!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif len(uname) < 6:
+                result = {"Message": "Username must contain atleast 6 characters!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif not password:
+                result = {"Message": "Please enter your password!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif len(password) < 8:
+                result = {"Message": "password must have more than 8 characters!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif re.search('[0-9]', password) is None:
+                result = {"Message": "password must contain a atleast one number!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif re.search('[A-Z]', password) is None:
+                result = {"Message": "password must contain a capital letter!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif uname in self.users.get_users():
+                result = {"Message": "Username is already registered, please login"}
+                response = jsonify(result)
+                response.status_code = 401 #An authorized
+            else:
+                password_hash = hashlib.md5(password.encode()).hexdigest()
+                self.users.set_users(uname, password_hash)
+                result = {"Message":"You have successfully registered as "+uname}
+                response = jsonify(result)
+                response.status_code = 201 #Created
+        return response
 
 
 class Login(Register):
     '''Authenticates users'''
 
 
-    @auth.get_password
-    def get(self,username,password):
+    def get(self, username, password):
         '''Login'''
-        if not(username or password):
-            abort(400) #Bad request
-        elif username not in self.users.get_users():
-            abort(401) #An authorized
+        if username not in self.users.get_users():
+            result = {"Message": "Username not registered, please register!!!"}
+            response = jsonify(result)
+            response.status_code = 401  #An authorized
         else:
             uname = username
             password = hashlib.md5(password.encode()).hexdigest()
             if self.users.get_users()[uname] == password:
-                result = {"Success": "You have logged in successfully"}
+                result = {"Message": "You have logged in successfully"}
                 response = jsonify(result)
                 response.status_code = 200 #OK
             else:
-                result = {"Failed": "Username or password was incorrect!"}
+                result = {"Message": "Username or password was incorrect!"}
                 response = jsonify(result)
                 response.status_code = 401 #An authorized
-            return response
+        return response
 
 class Orders(Resource):
     """Class that holds the API endpoints that deals with multiple orders"""
@@ -85,34 +98,56 @@ class Orders(Resource):
 
     orders = FoodOrders()
 
-    #@auth.login_required
+
     def get(self):
         '''Get all the orders.'''
-        result = {"Orders": self.orders.get_orders()}
-        response = jsonify(result)
-        response.status_code = 200 #OK
+        order = self.orders.get_orders()
+        if order:
+            result = {"Message": self.orders.get_orders()}
+            response = jsonify(result)
+            response.status_code = 200 #OK
+        else:
+            result = {"Message": "No orders found"}
+            response = jsonify(result)
+            response.status_code = 200 #OK
         return response
 
     def post(self):
         '''Place a new order'''
         if not request.json or not "order_item" in request.json:
-            abort(400) #Bad Request
-        if not self.orders.get_orders():
-            order_id = 1
+            result = {"Message": "Unknown request!!"}
+            response = jsonify(result)
+            response.status_code = 400 #Bad request
         else:
-            order_id = self.orders.get_orders()[-1]['id'] + 1
-        new_order = {
-            "id": order_id,
-            "order_item": request.json['order_item'],
-            "description": request.json['description'],
-            "quantity": request.json['quantity'],
-    	    "order_date":str(datetime.datetime.now())[:19],
-            "status": "Pedding"
-        }
-        self.orders.set_orders(new_order)
-        result = {"Order": new_order}
-        response = jsonify(result)
-        response.status_code = 201 #Created
+            item = request.json['order_item']
+            desc = request.json['description']
+            order = [order for order in self.orders.get_orders()
+                     if(
+                         order['order_item'] == item and
+                         order['description'] == desc
+                         )
+                     ]
+            if not order:
+                if not self.orders.get_orders():
+                    order_id = 1
+                else:
+                    order_id = self.orders.get_orders()[-1]['id'] + 1
+                new_order = {
+                    "id": order_id,
+                    "order_item": item,
+                    "description": desc,
+                    "quantity": request.json['quantity'],
+                    "order_date": str(datetime.datetime.now())[:19],
+                    "status": "Pedding"
+                }
+                self.orders.set_orders(new_order)
+                result = {"Message": new_order}
+                response = jsonify(result)
+                response.status_code = 201 #Created
+            else:
+                result = {"Message": "Dublicate orders not allowed!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
         return response
 
 
@@ -122,36 +157,54 @@ class Order(Orders):
 
     food_orders = Orders.orders.get_orders()
 
-    def validate_request(self,orderId):
-        order = [order for order in self.food_orders if order['id'] == orderId]
-        if not order:
-            abort(404) #Not Found
-        else:
-            return order
+    def validate(self, order_id):
+        """Ensure user enters a valid order"""
+        if len(self.orders.get_orders()) < order_id:
+            return True
 
-    def get(self,orderId):
+    def check_order(self, order_id):
+        """Get user request"""
+        order = [order for order in self.orders.get_orders()
+                 if order['id'] == order_id
+                 ]
+        return order
+
+    def get(self, order_id):
         '''Fetch a specific order'''
-        self.validate_request(orderId)
-        result = {"Order": self.validate_request(orderId)}
-        response = jsonify(result)
-        response.status_code = 200 #OK
+        if self.validate(order_id):
+            result = {"Message": "No order found for id %d" %(order_id)}
+            response = jsonify(result)
+            response.status_code = 404 #Not found
+        else:
+            order = self.check_order(order_id)
+            result = {"Message": order}
+            response = jsonify(result)
+            response.status_code = 200 #OK
         return response
 
-    def put(self,orderId):
-        '''Update the status of an order.'''
-        order = self.validate_request(orderId)
-        order[0]['status'] = request.json['status']
-        result = {"Order": order}
-        response = jsonify(result)
-        response.status_code = 200 #OK
+    def put(self, order_id):
+        '''Update the status of an order'''
+        if self.validate(order_id):
+            result = {"Message": "No order found for id %d" %(order_id)}
+            response = jsonify(result)
+            response.status_code = 404 #Not found
+        else:
+            order = self.check_order(order_id)
+            order[0]['status'] = request.json['status']
+            result = {"Message": order}
+            response = jsonify(result)
+            response.status_code = 200 #OK
         return response
 
-    def delete(self,orderId):
+    def delete(self, order_id):
         '''Delete an order'''
-        self.food_orders.remove(
-                                self.validate_request(orderId)[0]
-                                )
-        result = {"Result": "Order deleted successfully"}
-        response = jsonify(result)
-        response.status_code = 200 #OK
+        if self.validate(order_id):
+            result = {"Message": "No order found for id %d" %(order_id)}
+            response = jsonify(result)
+            response.status_code = 404 #Not found
+        else:
+            self.food_orders.remove(self.check_order(order_id)[0])
+            result = {"Message": "Order deleted successfully"}
+            response = jsonify(result)
+            response.status_code = 200 #OK
         return response

@@ -5,6 +5,7 @@ Initalize the app and load configurations
 """
 
 from flask_api import FlaskAPI
+from flask_restful import Api
 
 #local imports
 from instance.config import my_app_config
@@ -22,6 +23,6 @@ def create_app(app_config_name):
                     )
     api.add_resource(Register,'/register')
     api.add_resource(Orders,'/orders')
-    api.add_resource(Order,'/orders/<int:orderId>')
+    api.add_resource(Order,'/orders/<int:order_id>')
 
     return app

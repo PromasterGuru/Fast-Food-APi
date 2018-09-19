@@ -25,7 +25,7 @@ Creates a set of API endpoints already defined below and use data structures to 
   <tr>
     <td>Fetch a specific order</td>
     <td>GET</td>
-    <td>/api/v1/orders/orderId<orderId></td>
+    <td>/api/v1/orders/order_id<order_id></td>
   </tr>
   <tr>
     <td>Place a new order</td>
@@ -35,12 +35,12 @@ Creates a set of API endpoints already defined below and use data structures to 
   <tr>
     <td>Update the status of an order</td>
     <td>PUT</td>
-    <td>/api/v1/orders/orderId</td>
+    <td>/api/v1/orders/order_id</td>
   </tr>
   <tr>
     <td>Delete a specific order</td>
     <td>DELETE</td>
-    <td>/api/v1/orders/orderId</td>
+    <td>/api/v1/orders/order_id</td>
   </tr>
   <tr>
     <td>Register for a new account</td>
