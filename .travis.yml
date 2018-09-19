@@ -11,7 +11,7 @@ install:
 
 #Run tests
 script:
-  - nosetests --with-coverage --cover-package=app test 
+  - nosetests --with-coverage --cover-erase --cover-package=app
 
 after_success:
   - coveralls

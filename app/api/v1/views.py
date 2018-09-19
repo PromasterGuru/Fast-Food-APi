@@ -109,7 +109,7 @@ class Orders(Resource):
         else:
             result = {"Message": "No orders found"}
             response = jsonify(result)
-            response.status_code = 200 #OK
+            response.status_code = 404 #OK
         return response
 
     def post(self):

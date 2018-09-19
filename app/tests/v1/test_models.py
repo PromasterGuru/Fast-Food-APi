@@ -52,6 +52,6 @@ class TestModels(unittest.TestCase):
         self.orders.set_users("paul", "mathenge")
         self.assertEqual(len(self.orders.get_users()), 1)
         self.assertNotEqual(len(self.orders.get_users()), 0)
-
-if __name__ == '__main__':
-    unittest.main()
+# 
+# if __name__ == '__main__':
+#     unittest.main()

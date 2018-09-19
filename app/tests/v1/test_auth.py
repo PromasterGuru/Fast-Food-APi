@@ -20,7 +20,7 @@ class TestAuthentication(unittest.TestCase):
         """Test configurations"""
         self.assertEqual(self.app.testing, True)
 
-    def test_register_with_valid_inputs(self):
+    def test_register_for_new_users(self):
         """User can register for a new account"""
         user = {
             'username': 'Promaster',
@@ -33,6 +33,20 @@ class TestAuthentication(unittest.TestCase):
         )
         response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 201, response['Message'])
+
+    def test_register_for_registered_users(self):
+        """User should not be allowed to register twice"""
+        user = {
+            'username': 'Promaster',
+            'password': 'Promaster2018',
+        }
+        resp = self.client().post(
+            '/api/v1/register',
+            data=json.dumps(user),
+            headers={'content-type': 'application/json'}
+        )
+        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(resp.status_code, 401, response['Message'])
 
     def test_register_with_empty_username(self):
         """Test when username is left blank"""
@@ -118,6 +132,32 @@ class TestAuthentication(unittest.TestCase):
         response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 400, response['Message'])
 
+    def test_register_bad_request_with_username(self):
+        """Username not included in the request"""
+        newuser = {
+            "password": "promaster2018"
+        }
+        resp = self.client().post(
+            '/api/v1/register',
+            data=json.dumps(newuser),
+            headers={'content-type': 'application/json'}
+        )
+        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(resp.status_code, 400, response['Message'])
+
+    def test_register_bad_request_with_password(self):
+        """Password not included in the request"""
+        newuser = {
+            "username": "Promaster"
+        }
+        resp = self.client().post(
+            '/api/v1/register',
+            data=json.dumps(newuser),
+            headers={'content-type': 'application/json'}
+        )
+        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(resp.status_code, 400, response['Message'])
+
     def test_login_with_unregistered_username(self):
         """User enters unregistered username"""
         newuser = {
@@ -171,6 +211,6 @@ class TestAuthentication(unittest.TestCase):
         )
         response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 200, response['Message'])
-
-if __name__ == "__main__":
-    unittest.main()
+#
+# if __name__ == "__main__":
+#     unittest.main()
