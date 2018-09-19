@@ -15,10 +15,6 @@ class TestAuthentication(unittest.TestCase):
         '''Define variables and initialize app'''
         self.app = create_app(app_config_name="testing")
         self.client = self.app.test_client
-        self.user = {
-            'username': 'Promaster',
-            'password': 'Promaster2018',
-        }
 
     def test_config(self):
         """Test configurations"""
@@ -26,9 +22,13 @@ class TestAuthentication(unittest.TestCase):
 
     def test_register_with_valid_inputs(self):
         """User can register for a new account"""
+        newuser = {
+            "username": "Prommaster",
+            "password": "Promaster2018"
+        }
         resp = self.client().post(
             '/api/v1/register',
-            data=json.dumps(self.user),
+            data=json.dumps(newuser),
             headers={'content-type': 'application/json'}
         )
         response = json.loads(resp.data.decode('utf-8'))
@@ -130,7 +130,7 @@ class TestAuthentication(unittest.TestCase):
             headers={'content-type': 'application/json'}
         )
         resp = self.client().get(
-            '/api/v1/login/username/Johnson/password/Promaster2018',
+            '/api/v1/login/username/samuel/password/Promaster2018',
             headers={'content-type': 'application/json'}
         )
         response = json.loads(resp.data.decode('utf-8'))
@@ -174,4 +174,3 @@ class TestAuthentication(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
