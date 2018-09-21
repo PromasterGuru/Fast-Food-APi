@@ -1,4 +1,4 @@
-#app/api/v1models.py
+#app/api/v1/models.py
 
 '''Food order class with storage model and methods.'''
 

@@ -2,12 +2,22 @@ language: python
 
 python:
   - "3.6"
+#
+# env:
+#   DATABASE_URL=""
+#   DATABASE_TEST_URL=""
+#   APP_SETTINGS=""
 
 #install dependences
 install:
   - pip install -r requirements.txt
   - pip install coveralls
   - pip install nose
+
+# services:
+#   -postgres
+# addon:
+#   -
 
 #Run tests
 script:
