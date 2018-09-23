@@ -178,21 +178,21 @@ class Order(Orders):
 
     def put(self, order_id):
         '''Update the status of an order'''
-        if self.validate(order_id):
+        if not self.validate(order_id):
             result = {"Message": "No order found for id %d" %(order_id)}
             response = jsonify(result)
             response.status_code = 404 #Not found
         else:
             order = self.check_order(order_id)
-            order[0]['status'] = request.json['status']
-            result = {"Message": order}
+            status = request.json['status']
+            result = {"Message": self.orders.update_orders(order_id,status)}
             response = jsonify(result)
             response.status_code = 200 #OK
         return response
 
     def delete(self, order_id):
         '''Delete an order'''
-        if self.validate(order_id):
+        if not self.validate(order_id):
             result = {"Message": "No order found for id %d" %(order_id)}
             response = jsonify(result)
             response.status_code = 404 #Not found

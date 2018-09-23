@@ -63,9 +63,20 @@ class FoodOrders():
                 order['user_id'] = item[1]
                 order['order_item'] = item[2]
                 order['description'] = item[3]
-                order['order_date'] = item[4]
-                order['status'] = item[5]
+                order['quantity'] = item[4]
+                order['order_date'] = item[5]
+                order['status'] = item[6]
                 foods.append(order)
             return foods
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error %s"%(error))
+
+    def update_orders(self, id, status):
+        """Update order status"""
+        query = """UPDATE Orders SET status = (%s) WHERE order_id = (%s);"""
+        try:
+            self.cursor.execute(query,(status,id))
+            self.con.commit()
+            return ("Order successfully updated")
+        except (Exception, psycopg2.DatabaseError) as error:
+            return ("Error! %s"%(error))
