@@ -118,23 +118,21 @@ class Orders(Resource):
             response = jsonify(result)
             response.status_code = 400 #Bad request
         else:
+            user_id = 1
             item = request.json['order_item']
             desc = request.json['description']
             order = [order for order in self.orders.get_orders()
                      if(
+                         order['user_id'] == user_id and
                          order['order_item'] == item and
                          order['description'] == desc
                          )
                      ]
             if not order:
-                if not self.orders.get_orders():
-                    order_id = 1
-                else:
-                    order_id = self.orders.get_orders()[-1]['id'] + 1
                 qty = request.json['quantity']
                 order_date = str(datetime.datetime.now())[:19]
                 status = "Pedding"
-                result = self.orders.set_orders(order_id, item, desc, qty, order_date, status)
+                result = self.orders.set_orders(user_id, item, desc, qty, order_date, status)
                 response = jsonify(result)
                 response.status_code = 201 #Created
             else:
