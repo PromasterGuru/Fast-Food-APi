@@ -131,16 +131,10 @@ class Orders(Resource):
                     order_id = 1
                 else:
                     order_id = self.orders.get_orders()[-1]['id'] + 1
-                new_order = {
-                    "id": order_id,
-                    "order_item": item,
-                    "description": desc,
-                    "quantity": request.json['quantity'],
-                    "order_date": str(datetime.datetime.now())[:19],
-                    "status": "Pedding"
-                }
-                self.orders.set_orders(new_order)
-                result = {"Message": new_order}
+                qty = request.json['quantity']
+                order_date = str(datetime.datetime.now())[:19]
+                status = "Pedding"
+                result = self.orders.set_orders(order_id, item, desc, qty, order_date, status)
                 response = jsonify(result)
                 response.status_code = 201 #Created
             else:
