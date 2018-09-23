@@ -197,8 +197,7 @@ class Order(Orders):
             response = jsonify(result)
             response.status_code = 404 #Not found
         else:
-            self.food_orders.remove(self.check_order(order_id)[0])
-            result = {"Message": "Order deleted successfully"}
+            result = {"Message": self.orders.delete_orders(order_id)}
             response = jsonify(result)
             response.status_code = 200 #OK
         return response

@@ -73,10 +73,20 @@ class FoodOrders():
 
     def update_orders(self, id, status):
         """Update order status"""
-        query = """UPDATE Orders SET status = (%s) WHERE order_id = (%s);"""
+        query = """UPDATE Orders SET status = %s WHERE order_id = %s;"""
         try:
             self.cursor.execute(query,(status,id))
             self.con.commit()
             return ("Order successfully updated")
+        except (Exception, psycopg2.DatabaseError) as error:
+            return ("Error! %s"%(error))
+
+    def delete_orders(self, order_id):
+        """Delete an order"""
+        query = """DELETE FROM Orders WHERE order_id = %s;"""
+        try:
+            self.cursor.execute(query,(order_id,))
+            self.con.commit()
+            return ("Order successfully deleted")
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error! %s"%(error))
