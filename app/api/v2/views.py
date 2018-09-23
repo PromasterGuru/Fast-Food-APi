@@ -148,12 +148,13 @@ class Order(Orders):
     '''Holds API endpoints with specific orders'''
 
 
-    food_orders = Orders.orders.get_orders()
-
     def validate(self, order_id):
         """Ensure user enters a valid order"""
-        if len(self.orders.get_orders()) < order_id:
-            return True
+        found = False
+        for order in self.orders.get_orders():
+            if order['id'] == order_id:
+                found = True
+        return found
 
     def check_order(self, order_id):
         """Get user request"""
@@ -164,7 +165,7 @@ class Order(Orders):
 
     def get(self, order_id):
         '''Fetch a specific order'''
-        if self.validate(order_id):
+        if not self.validate(order_id):
             result = {"Message": "No order found for id %d" %(order_id)}
             response = jsonify(result)
             response.status_code = 404 #Not found

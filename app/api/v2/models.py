@@ -52,20 +52,20 @@ class FoodOrders():
 
     def get_orders(self):
         '''Return a list of food orders'''
-        order = {}
         foods = []
         try:
             query = """SELECT * FROM Orders;"""
             self.cursor.execute(query)
             orders = self.cursor.fetchall()
             for item in orders:
-            	order['id'] = item[0]
-            	order['user_id'] = item[1]
-            	order['order_item'] = item[2]
-            	order['description'] = item[3]
-            	order['order_date'] = item[4]
-            	order['status'] = item[5]
-            	foods.append(order)
+                order = {}
+                order['id'] = item[0]
+                order['user_id'] = item[1]
+                order['order_item'] = item[2]
+                order['description'] = item[3]
+                order['order_date'] = item[4]
+                order['status'] = item[5]
+                foods.append(order)
             return foods
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error %s"%(error))
