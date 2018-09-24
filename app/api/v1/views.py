@@ -5,7 +5,8 @@ Implementation of API EndPoint
 '''
 import re
 import datetime
-import hashlib
+import jwt
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import jsonify, request, abort
 from flask_restful import Resource
 
@@ -61,7 +62,7 @@ class Register(Resource):
                 response = jsonify(result)
                 response.status_code = 401 #An authorized
             else:
-                password_hash = hashlib.md5(password.encode()).hexdigest()
+                password_hash = generate_password_hash(password, method='sha256')
                 self.users.set_users(uname, password_hash)
                 result = {"Message":"You have successfully registered as "+uname}
                 response = jsonify(result)
@@ -73,23 +74,33 @@ class Login(Register):
     '''Authenticates users'''
 
 
-    def get(self, username, password):
+    def get(self):
         '''Login'''
-        if username not in self.users.get_users():
-            result = {"Message": "Username not registered, please register!!!"}
+        auth = request.authorization
+        if not auth or not auth.username or not auth.password:
+            result = {"Message": "User not verified, Please login!"}
             response = jsonify(result)
-            response.status_code = 401  #An authorized
+            response.status_code = 401 #OK
         else:
-            uname = username
-            password = hashlib.md5(password.encode()).hexdigest()
-            if self.users.get_users()[uname] == password:
-                result = {"Message": "You have logged in successfully"}
+            if auth.username not in self.users.get_users():
+                result = {"Message": "Username not registered, please register!!!"}
                 response = jsonify(result)
-                response.status_code = 200 #OK
+                response.status_code = 401  #An authorized
             else:
-                result = {"Message": "Username or password was incorrect!"}
-                response = jsonify(result)
-                response.status_code = 401 #An authorized
+                uname = auth.username
+                if check_password_hash(self.users.get_users()[uname],auth.password):
+                    token = jwt.encode({'username': uname,
+                                        'exp': datetime.datetime.utcnow()
+                                        + datetime.timedelta(minutes=15)
+                                        },app.config['SECRET_KEY'])
+                    result = {"Message": "Login successful, Welcome %s"%(uname),
+                              "Token": token.decode('UTF-8')}
+                    response = jsonify(result)
+                    response.status_code = 200 #OK
+                else:
+                    result = {"Message": "Username or password was incorrect!"}
+                    response = jsonify(result)
+                    response.status_code = 401 #An authorized
         return response
 
 class Orders(Resource):

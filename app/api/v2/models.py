@@ -11,52 +11,66 @@ class FoodOrders():
     '''Food order with storage and methods.'''
 
 
-    def __init__(self):
-        '''Initialize variables'''
-        self.con = DB().create_con()
-        self.cursor = self.con.cursor()
-
     def set_users(self, uname, password):
         '''Add new users'''
+        con = DB().create_con()
+        cursor = con.cursor()
         try:
             query = """INSERT INTO Users(username,password) VALUES(%s, %s);"""
-            self.cursor.execute(query,(uname,password))
-            self.con.commit()
+            cursor.execute(query,(uname,password))
+            con.commit()
+            cursor.close()
+            con.close()
             return ("%s registered successfully"%(uname))
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error %s"%(error))
 
     def get_users(self):
         '''Return a dictionary of users'''
+        con = DB().create_con()
+        cursor = con.cursor()
+        cur_users = []
         try:
-            query = """SELECT username,password FROM Users;"""
-            self.cursor.execute(query)
-            resp = self.cursor.fetchall()
-            return dict(resp)
+            query = """SELECT user_id, username, password FROM Users;"""
+            cursor.execute(query)
+            users = cursor.fetchall()
+            for user in users:
+                my_user = {}
+                my_user['user_id'] = user[0]
+                my_user['username'] = user[1]
+                my_user['password'] = user[2]
+                cur_users.append(my_user)
+            return cur_users
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error %s"%(error))
 
     def set_orders(self, user_id, item, desc, qty, order_date, status):
         '''Add new orders'''
+        con = DB().create_con()
+        cursor = con.cursor()
         try:
             query = """INSERT INTO Orders(
                                             user_id, order_item, description,
                                             quantity, order_date, status
                                         )
                        VALUES(%s, %s, %s, %s, %s, %s);"""
-            self.cursor.execute(query,(user_id, item, desc, qty, order_date, status))
-            self.con.commit()
+            cursor.execute(query,(user_id, item, desc, qty, order_date, status))
+            con.commit()
+            cursor.close()
+            con.close()
             return ("Order successfully placed")
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error! %s"%(error))
 
     def get_orders(self):
         '''Return a list of food orders'''
+        con = DB().create_con()
+        cursor = con.cursor()
         foods = []
         try:
             query = """SELECT * FROM Orders;"""
-            self.cursor.execute(query)
-            orders = self.cursor.fetchall()
+            cursor.execute(query)
+            orders = cursor.fetchall()
             for item in orders:
                 order = {}
                 order['id'] = item[0]
@@ -73,20 +87,28 @@ class FoodOrders():
 
     def update_orders(self, id, status):
         """Update order status"""
+        con = DB().create_con()
+        cursor = con.cursor()
         query = """UPDATE Orders SET status = %s WHERE order_id = %s;"""
         try:
-            self.cursor.execute(query,(status,id))
-            self.con.commit()
+            cursor.execute(query,(status,id))
+            con.commit()
+            cursor.close()
+            con.close()
             return ("Order successfully updated")
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error! %s"%(error))
 
     def delete_orders(self, order_id):
         """Delete an order"""
+        con = DB().create_con()
+        cursor = con.cursor()
         query = """DELETE FROM Orders WHERE order_id = %s;"""
         try:
-            self.cursor.execute(query,(order_id,))
-            self.con.commit()
+            cursor.execute(query,(order_id,))
+            con.commit()
+            cursor.close()
+            con.close()
             return ("Order successfully deleted")
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error! %s"%(error))
