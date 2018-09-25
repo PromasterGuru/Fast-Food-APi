@@ -149,6 +149,11 @@ class Login(Register):
                     response = jsonify(result)
                     response.status_code = 200 #OK
                     return response
+                else:
+                    result = {"Message": "Wrong username or password!"}
+                    response = jsonify(result)
+                    response.status_code = 401 #Unauthorized
+                    return response
 
 
 class Orders(Resource):
