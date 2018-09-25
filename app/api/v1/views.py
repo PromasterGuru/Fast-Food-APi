@@ -8,7 +8,7 @@ import re
 import datetime
 from flask import jsonify, request
 from flask_restful import Resource
-import jwt
+# import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 # from functools import wraps
 
@@ -139,13 +139,13 @@ class Login(Register):
                     users = self.users.get_users()
                     user_id = len(users)+1
                     current_user_id = user_id
-                    token = jwt.encode({'user_id': user_id,
-                                        'exp': datetime.datetime.utcnow()
-                                               + datetime.timedelta(minutes=15)
-                                        }, os.getenv('SECRET')
-                                       )
-                    result = {"Message": "Login successful, Welcome %s" %(uname)
-                                         , "Token": token.decode('UTF-8')}
+                    # token = jwt.encode({'user_id': user_id,
+                    #                     'exp': datetime.datetime.utcnow()
+                    #                            + datetime.timedelta(minutes=15)
+                    #                     }, os.getenv('SECRET')
+                    #                    )
+                    result = {"Message": "Login successful, Welcome %s" %(uname)}
+                                         # , "Token": token.decode('UTF-8')}
                     response = jsonify(result)
                     response.status_code = 200 #OK
                     return response
