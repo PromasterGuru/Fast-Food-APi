@@ -9,11 +9,8 @@ python:
 
 install:
   - pip install -r requirements.txt
-  - pip install coveralls
-  - pip install nose
-
-services:
-  -postgresql
+# services:
+#   -postgresql
 
 # addon:
 #   -postgresql: "9.6"
@@ -23,7 +20,7 @@ services:
 #   -psql -c 'GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA'
 
 script:
-  - nosetests --with-coverage --cover-erase --cover-package=app
+  - nosetests --with-coverage --cover-package=app
 
 after_success:
   - coveralls
