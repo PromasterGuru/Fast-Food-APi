@@ -8,8 +8,8 @@ import re
 import datetime
 from flask import jsonify, request
 from flask_restful import Resource
-from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
+from werkzeug.security import generate_password_hash, check_password_hash
 # from functools import wraps
 
 #local import
