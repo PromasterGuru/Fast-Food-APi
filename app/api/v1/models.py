@@ -11,9 +11,9 @@ class FoodOrders():
         self.food_orders = []
         self.users = []
 
-    def set_users(self, uname, password):
+    def set_users(self, users):
         '''Add new users'''
-        self.users[uname] = password
+        self.users.append(users)
 
     def get_users(self):
         '''Return a dictionary of users'''

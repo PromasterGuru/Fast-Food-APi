@@ -48,10 +48,15 @@ class TestModels(unittest.TestCase):
         self.assertNotEqual(len(self.orders.get_orders()), 0)
 
     def test_push1_one_user_record(self):
-        """Test when one user is registered in the database"""
-        self.orders.set_users("paul", "mathenge")
+        """Test when one user is registered"""
+        user = {
+            "user_id": 1,
+            "username": "Promaster",
+            "password": "Pmutondo12@gmail.com"
+        }
+        self.orders.set_users(user)
         self.assertEqual(len(self.orders.get_users()), 1)
         self.assertNotEqual(len(self.orders.get_users()), 0)
-# 
+#
 # if __name__ == '__main__':
 #     unittest.main()

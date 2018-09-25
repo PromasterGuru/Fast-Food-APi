@@ -4,6 +4,7 @@
 
 import json
 import unittest
+import base64
 from app import create_app
 
 
@@ -23,6 +24,7 @@ class TestAuthentication(unittest.TestCase):
     def test_register_for_new_users(self):
         """User can register for a new account"""
         user = {
+            'user_id': 1,
             'username': 'Promaster',
             'password': 'Promaster2018',
         }
@@ -37,6 +39,7 @@ class TestAuthentication(unittest.TestCase):
     def test_register_for_registered_users(self):
         """User should not be allowed to register twice"""
         user = {
+            'user_id': 1,
             'username': 'Promaster',
             'password': 'Promaster2018',
         }
@@ -66,6 +69,7 @@ class TestAuthentication(unittest.TestCase):
     def test_register_with_short_username(self):
         """When username is less than 6 characters"""
         newuser = {
+            "user_id": 1,
             "username": "paul",
             "password": "Promaster2018"
         }
@@ -80,6 +84,7 @@ class TestAuthentication(unittest.TestCase):
     def test_register_without_password(self):
         """User tries to register without a password"""
         newuser = {
+            "user_id": 1,
             "username": "Promaster",
             "password": ""
         }
@@ -94,6 +99,7 @@ class TestAuthentication(unittest.TestCase):
     def test_register_with_short_password(self):
         """Password less than 8 alphanumeric characters"""
         newuser = {
+            "user_id": 1,
             "username": "Promaster",
             "password": "Pm2018"
         }
@@ -108,6 +114,7 @@ class TestAuthentication(unittest.TestCase):
     def test_register_for_password_without_numbers(self):
         """Password without atleast one numeric character"""
         newuser = {
+            "user_id": 1,
             "username": "Promaster",
             "password": "Promaster"
         }
@@ -122,6 +129,7 @@ class TestAuthentication(unittest.TestCase):
     def test_register_for_password_without_capital_letters(self):
         """Password without atleast one capital letter"""
         newuser = {
+            "user_id": 1,
             "username": "Promaster",
             "password": "promaster2018"
         }
@@ -161,18 +169,11 @@ class TestAuthentication(unittest.TestCase):
 
     def test_login_with_unregistered_username(self):
         """User enters unregistered username"""
-        newuser = {
-            "username": "Johnson",
-            "password": "promaster2018"
-        }
-        self.client().post(
-            '/api/v1/register',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
         resp = self.client().get(
             '/api/v1/login',
-            headers={'content-type': 'application/json'}
+            headers={
+                "Authorization": "Basic UGF1bDIwMTk6UGF1bDIwMTk="
+                }
         )
         response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 401, response['Message'])
@@ -180,7 +181,7 @@ class TestAuthentication(unittest.TestCase):
     def test_login_with_wrong_password(self):
         """Login with wrong password"""
         newuser = {
-            "username": "Johnson",
+            "username": "Johnson784",
             "password": "promaster2018"
         }
         self.client().post(
@@ -190,7 +191,9 @@ class TestAuthentication(unittest.TestCase):
         )
         resp = self.client().get(
             '/api/v1/login',
-            headers={'content-type': 'application/json'}
+            headers={
+                "Authorization": "Basic UGF1bDIwMTk6UGF1bDIwMTk="
+                }
         )
         response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 401, response['Message'])
@@ -198,7 +201,7 @@ class TestAuthentication(unittest.TestCase):
     def test_login_with_valid_credentials(self):
         """Login with valid username and password"""
         newuser = {
-            "username": "Johnson",
+            "username": "Promaster2018",
             "password": "Promaster2018"
         }
         self.client().post(
@@ -208,10 +211,24 @@ class TestAuthentication(unittest.TestCase):
         )
         resp = self.client().get(
             '/api/v1/login',
-            headers={'content-type': 'application/json'}
+            headers={
+                "Authorization": "Basic UHJvbWFzdGVyMjAxODpQcm9tYXN0ZXIyMDE4"
+                }
         )
         response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 200, response['Message'])
+
+    def test_login_for_bad_requests(self):
+        """Test login with no username or password"""
+        resp = self.client().get(
+            '/api/v1/login',
+            headers={
+                "Authorization": "Basic Og=="
+                }
+        )
+        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(resp.status_code, 401, response['Message'])
+
 #
 # if __name__ == "__main__":
 #     unittest.main()
