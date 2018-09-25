@@ -6,11 +6,11 @@ Implementation of API EndPoint
 import os
 import re
 import datetime
-import jwt
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask import jsonify, request, make_response
+from flask import jsonify, request
 from flask_restful import Resource
-from functools import wraps
+from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
+# from functools import wraps
 
 #local import
 from .models import FoodOrders
@@ -125,6 +125,7 @@ class Login(Register):
             result = {"Message": "User not verified, Please login again!"}
             response = jsonify(result)
             response.status_code = 401 #OK
+            return response
         else:
             users = self.users.get_users()
             user = [user for user in users if user['username'] == uname]
@@ -132,21 +133,22 @@ class Login(Register):
                 result = {"Message": "Username not registered, please register!!!"}
                 response = jsonify(result)
                 response.status_code = 401  #An authorized
+                return response
             else:
-                if check_password_hash(user[0]['password'],password):
+                if check_password_hash(user[0]['password'], password):
                     users = self.users.get_users()
                     user_id = len(users)+1
                     current_user_id = user_id
                     token = jwt.encode({'user_id': user_id,
                                         'exp': datetime.datetime.utcnow()
-                                        + datetime.timedelta(minutes=15)
-                                        },os.getenv('SECRET'))
+                                               + datetime.timedelta(minutes=15)
+                                        }, os.getenv('SECRET')
+                                       )
                     result = {"Message": "Login successful, Welcome %s" %(uname)
-                              ,"Token": token.decode('UTF-8')}
+                                         , "Token": token.decode('UTF-8')}
                     response = jsonify(result)
                     response.status_code = 200 #OK
-                    
-        return response
+                    return response
 
 
 class Orders(Resource):
@@ -191,7 +193,6 @@ class Orders(Resource):
             order_id = len(orders)+1
 
             if not order:
-                users = self.orders.get_users()
                 user_id = current_user_id
                 qty = request.json['quantity']
                 order_date = str(datetime.datetime.now())[:19]
@@ -207,7 +208,7 @@ class Orders(Resource):
                 }
                 self.orders.set_orders(new_order)
                 result = {"Message": "Order placed successfully,"
-                          + " we will get back to you in 5 minutes"}
+                                     + " we will get back to you in 5 minutes"}
                 response = jsonify(result)
                 response.status_code = 201 #Created
             else:
@@ -276,8 +277,8 @@ class Order(Orders):
         else:
             orders = self.orders.get_orders()
             order_id = [order_id for order_id in range(len(orders))
-                     if orders[order_id] == self.check_order(order_id)
-                     ]
+                        if orders[order_id] == self.check_order(order_id)
+                        ]
             orders.pop(0)
             result = {"Message": "Order deleted successfully"}
             response = jsonify(result)

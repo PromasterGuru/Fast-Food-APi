@@ -4,7 +4,7 @@
 
 import json
 import unittest
-import base64
+from base64 import b64encode
 from app import create_app
 
 
@@ -169,37 +169,31 @@ class TestAuthentication(unittest.TestCase):
 
     def test_login_with_unregistered_username(self):
         """User enters unregistered username"""
+        hash_string = b64encode(b"Promaster2018:Promaster2018").decode("ascii")
         resp = self.client().get(
             '/api/v1/login',
-            headers={
-                "Authorization": "Basic UGF1bDIwMTk6UGF1bDIwMTk="
-                }
+            headers = {
+                        'Authorization' : 'Basic %s' %  hash_string
+                    }
         )
         response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 401, response['Message'])
 
     def test_login_with_wrong_password(self):
         """Login with wrong password"""
-        newuser = {
-            "username": "Johnson784",
-            "password": "promaster2018"
-        }
-        self.client().post(
-            '/api/v1/register',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
+        hash_string = b64encode(b"Johnson784:Promaster2018").decode("ascii")
         resp = self.client().get(
             '/api/v1/login',
-            headers={
-                "Authorization": "Basic UGF1bDIwMTk6UGF1bDIwMTk="
-                }
+            headers = {
+                        'Authorization' : 'Basic %s' %  hash_string
+                    }
         )
         response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 401, response['Message'])
 
     def test_login_with_valid_credentials(self):
         """Login with valid username and password"""
+        hash_string = b64encode(b"Promaster2018:Promaster2018").decode("ascii")
         newuser = {
             "username": "Promaster2018",
             "password": "Promaster2018"
@@ -211,19 +205,20 @@ class TestAuthentication(unittest.TestCase):
         )
         resp = self.client().get(
             '/api/v1/login',
-            headers={
-                "Authorization": "Basic UHJvbWFzdGVyMjAxODpQcm9tYXN0ZXIyMDE4"
-                }
+            headers = {
+                        'Authorization' : 'Basic %s' % hash_string
+                       }
         )
         response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 200, response['Message'])
 
     def test_login_for_bad_requests(self):
         """Test login with no username or password"""
+        hash_string = b64encode(b"Promaster2018:Promaster2018").decode("ascii")
         resp = self.client().get(
             '/api/v1/login',
             headers={
-                "Authorization": "Basic Og=="
+                "Authorization": 'Basic %s' % hash_string
                 }
         )
         response = json.loads(resp.data.decode('utf-8'))
