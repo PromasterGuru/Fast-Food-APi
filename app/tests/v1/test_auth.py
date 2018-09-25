@@ -51,6 +51,7 @@ class TestAuthentication(unittest.TestCase):
     def test_register_with_empty_username(self):
         """Test when username is left blank"""
         newuser = {
+            "user_id": 1,
             "username": "",
             "password": "Promaster2018"
         }
@@ -170,7 +171,7 @@ class TestAuthentication(unittest.TestCase):
             headers={'content-type': 'application/json'}
         )
         resp = self.client().get(
-            '/api/v1/login/username/samuel/password/Promaster2018',
+            '/api/v1/login',
             headers={'content-type': 'application/json'}
         )
         response = json.loads(resp.data.decode('utf-8'))
@@ -188,7 +189,7 @@ class TestAuthentication(unittest.TestCase):
             headers={'content-type': 'application/json'}
         )
         resp = self.client().get(
-            '/api/v1/login/username/Johnson/password/Pomaster2018',
+            '/api/v1/login',
             headers={'content-type': 'application/json'}
         )
         response = json.loads(resp.data.decode('utf-8'))
@@ -206,7 +207,7 @@ class TestAuthentication(unittest.TestCase):
             headers={'content-type': 'application/json'}
         )
         resp = self.client().get(
-            '/api/v1/login/username/Johnson/password/Promaster2018',
+            '/api/v1/login',
             headers={'content-type': 'application/json'}
         )
         response = json.loads(resp.data.decode('utf-8'))

@@ -191,6 +191,6 @@ class TestRouteCases(unittest.TestCase):
             headers={'content-type': 'application/json'}
         )
         self.assertEqual(resp.status_code, 404)
-#
-# if __name__ == "__main__":
-#     unittest.main()
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,4 +1,4 @@
-#app/api/v1/models.py
+#app/api/v1models.py
 
 '''Food order class with storage model and methods.'''
 
@@ -11,12 +11,12 @@ class FoodOrders():
         self.food_orders = []
         self.users = []
 
-    def set_users(self, user):
+    def set_users(self, uname, password):
         '''Add new users'''
-        self.users.append(user)
+        self.users[uname] = password
 
     def get_users(self):
-        '''Return a list of all users'''
+        '''Return a dictionary of users'''
         return self.users
 
     def set_orders(self, orders):
