@@ -9,6 +9,9 @@ python:
 
 install:
   - pip install -r requirements.txt
+  - pip install coveralls
+  - pip install nose
+
 # services:
 #   -postgresql
 
