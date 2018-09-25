@@ -1,4 +1,4 @@
-#app/api/v1/views.py
+#app/api/v2/views.py
 
 '''
 Implementation of API EndPoint

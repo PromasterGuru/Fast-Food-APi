@@ -9,14 +9,14 @@ class FoodOrders():
     def __init__(self):
         '''Initialize food orders.'''
         self.food_orders = []
-        self.users = {}
+        self.users = []
 
-    def set_users(self, uname, password):
+    def set_users(self, user):
         '''Add new users'''
-        self.users[uname] = password
+        self.users.append(user)
 
     def get_users(self):
-        '''Return a dictionary of users'''
+        '''Return a list of all users'''
         return self.users
 
     def set_orders(self, orders):
