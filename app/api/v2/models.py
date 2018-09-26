@@ -15,7 +15,7 @@
 #         '''Add new users'''
 #         con = DB().create_con()
 #         cursor = con.cursor()
-#         try:
+#         try:++++++++
 #             query = """INSERT INTO Users(username,password) VALUES(%s, %s);"""
 #             cursor.execute(query,(uname,password))
 #             con.commit()

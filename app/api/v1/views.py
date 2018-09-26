@@ -8,44 +8,10 @@ import re
 import datetime
 from flask import jsonify, request
 from flask_restful import Resource
-# import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
-# from functools import wraps
 
 #local import
 from .models import FoodOrders
-
-current_user_id = 0
-
-# def token_required(f):
-#     @wraps(f)
-#     def decorated(*args, **kwargs):
-#         '''Validate user token'''
-#         token = None
-#
-#         if 'x-access-token' in request.headers:
-#             token = request.headers['x-access-token']
-#         #token = request.args.get('token')
-#
-#         if not token:
-#             result = {"Message": "Token is missing, please login."}
-#             response = jsonify(result)
-#             response.status_code = 404 #Not found
-#             return response
-#
-#         try:
-#             data = jwt.decode(token,os.getenv('SECRET'))
-#             current_user = data['user_id']
-#             current_user_id = current_user
-#         except Exception as error:
-#             result = {"Message": "Your token is Invalid, please login."}
-#             response = jsonify(result)
-#             response.status_code = 401 #Un authorized
-#             return response
-#
-#         return f(current_user, *args, **kwargs)
-#
-#     return decorated
 
 
 class Register(Resource):
@@ -116,12 +82,13 @@ class Login(Register):
     '''Authenticates users'''
 
 
-    def get(self):
+    def post(self):
         '''Login'''
-        auth = request.authorization
-        uname = auth.username
-        password = auth.password
-        if not auth or not uname or not password:
+
+        uname = request.json['username']
+        password = request.json['password']
+        user_id = 0
+        if not request.json or not uname or not password:
             result = {"Message": "User not verified, Please login again!"}
             response = jsonify(result)
             response.status_code = 401 #OK
@@ -137,15 +104,9 @@ class Login(Register):
             else:
                 if check_password_hash(user[0]['password'], password):
                     users = self.users.get_users()
-                    user_id = len(users)+1
-                    current_user_id = user_id
-                    # token = jwt.encode({'user_id': user_id,
-                    #                     'exp': datetime.datetime.utcnow()
-                    #                            + datetime.timedelta(minutes=15)
-                    #                     }, os.getenv('SECRET')
-                    #                    )
+                    user = [user for user in users if user['username'] == uname]
+                    user_id = user[0]['user_id']
                     result = {"Message": "Login successful, Welcome %s" %(uname)}
-                                         # , "Token": token.decode('UTF-8')}
                     response = jsonify(result)
                     response.status_code = 200 #OK
                     return response
@@ -162,7 +123,6 @@ class Orders(Resource):
 
     orders = FoodOrders()
 
-    # @token_required
     def get(self):
         '''Get all the orders.'''
         order = self.orders.get_orders()
@@ -176,7 +136,6 @@ class Orders(Resource):
             response.status_code = 404 #OK
         return response
 
-    # @token_required
     def post(self):
         '''Place a new order'''
         if not request.json or not "order_item" in request.json:
@@ -188,17 +147,16 @@ class Orders(Resource):
 
             item = request.json['order_item']
             desc = request.json['description']
+            user_id = len(self.orders.get_users())
             order = [order for order in orders
                      if(
-                         order['user_id'] == current_user_id and
+                         order['user_id'] == user_id and
                          order['order_item'] == item and
                          order['description'] == desc
                          )
                      ]
             order_id = len(orders)+1
-
             if not order:
-                user_id = current_user_id
                 qty = request.json['quantity']
                 order_date = str(datetime.datetime.now())[:19]
                 status = "Pedding"
@@ -242,7 +200,6 @@ class Order(Orders):
                  ]
         return order
 
-    # @token_required
     def get(self, order_id):
         '''Fetch a specific order'''
         if not self.validate(order_id):
@@ -256,7 +213,6 @@ class Order(Orders):
             response.status_code = 200 #OK
         return response
 
-    # @token_required
     def put(self, order_id):
         '''Update the status of an order'''
         if not self.validate(order_id):
@@ -272,7 +228,6 @@ class Order(Orders):
             response.status_code = 200 #OK
         return response
 
-    # @token_required
     def delete(self, order_id):
         '''Delete an order'''
         if not self.validate(order_id):
