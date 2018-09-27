@@ -214,8 +214,8 @@ class OrderV2(OrdersV2):
                  ]
         return order
 
-    @token_required
-    def get(current_user, self, order_id):
+    # @token_required
+    def get(self, order_id):
         '''Fetch a specific order'''
         if not self.validate(order_id):
             result = {"Message": "No order found for id %d" %(order_id)}
@@ -229,7 +229,7 @@ class OrderV2(OrdersV2):
         return response
 
     # @token_required
-    def put(current_user, self, order_id):
+    def put(self, order_id):
         '''Update the status of an order'''
         if not self.validate(order_id):
             result = {"Message": "No order found for id %d" %(order_id)}
@@ -244,14 +244,14 @@ class OrderV2(OrdersV2):
         return response
 #
 #     @token_required
-#     def delete(current_user, self, order_id):
-#         '''Delete an order'''
-#         if not self.validate(order_id):
-#             result = {"Message": "No order found for id %d" %(order_id)}
-#             response = jsonify(result)
-#             response.status_code = 404 #Not found
-#         else:
-#             result = {"Message": self.orders.delete_orders(order_id)}
-#             response = jsonify(result)
-#             response.status_code = 200 #OK
-#         return response
+    def delete(self, order_id):
+        '''Delete an order'''
+        if not self.validate(order_id):
+            result = {"Message": "No order found for id %d" %(order_id)}
+            response = jsonify(result)
+            response.status_code = 404 #Not found
+        else:
+            result = {"Message": self.orders.delete_orders(order_id)}
+            response = jsonify(result)
+            response.status_code = 200 #OK
+        return response
