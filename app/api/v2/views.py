@@ -15,37 +15,37 @@ from flask_restful import Resource
 #local import
 from .models import FoodOrders
 
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        '''Validate user token'''
-        token = None
-
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
-        #token = request.args.get('token')
-
-        if not token:
-            result = {"Message": "Token is missing, please login."}
-            response = jsonify(result)
-            response.status_code = 404 #Not found
-            return response
-
-        try:
-            data = jwt.decode(token,os.getenv('SECRET'))
-            users = FoodOrders().get_users()
-            current_user = [current_user for current_user in users
-                 if current_user['user_id'] == data['user_id']
-                 ]
-        except Exception as error:
-            result = {"Message": "Your token is Invalid, please login."}
-            response = jsonify(result)
-            response.status_code = 401 #Un authorized
-            return response
-
-        return f(current_user, *args, **kwargs)
-
-    return decorated
+# def token_required(f):
+#     @wraps(f)
+#     def decorated(*args, **kwargs):
+#         '''Validate user token'''
+#         token = None
+#
+#         if 'x-access-token' in request.headers:
+#             token = request.headers['x-access-token']
+#         #token = request.args.get('token')
+#
+#         if not token:
+#             result = {"Message": "Token is missing, please login."}
+#             response = jsonify(result)
+#             response.status_code = 404 #Not found
+#             return response
+#
+#         try:
+#             data = jwt.decode(token,os.getenv('SECRET'))
+#             users = FoodOrders().get_users()
+#             current_user = [current_user for current_user in users
+#                  if current_user['user_id'] == data['user_id']
+#                  ]
+#         except Exception as error:
+#             result = {"Message": "Your token is Invalid, please login."}
+#             response = jsonify(result)
+#             response.status_code = 401 #Un authorized
+#             return response
+#
+#         return f(current_user, *args, **kwargs)
+#
+#     return decorated
 
 
 class RegisterV2(Resource):
@@ -145,11 +145,11 @@ class LoginV2(RegisterV2):
 class OrdersV2(Resource):
     """Class that holds the API endpoints that deals with multiple orders"""
 
-    
+
     orders = FoodOrders()
 
     # # @token_required
-    def get(current_user, self):
+    def get(self):
         '''Get all the orders.'''
         order = self.orders.get_orders()
         if order:
@@ -194,39 +194,40 @@ class OrdersV2(Resource):
         return response
 
 
-# class OrderV2(OrdersV2):
-#     '''Holds API endpoints with specific orders'''
-#
-#
-#     def validate(self, order_id):
-#         """Ensure user enters a valid order"""
-#         found = False
-#         for order in self.orders.get_orders():
-#             if order['id'] == order_id:
-#                 found = True
-#         return found
-#
-#     def check_order(self, order_id):
-#         """Get user request"""
-#         order = [order for order in self.orders.get_orders()
-#                  if order['id'] == order_id
-#                  ]
-#         return order
-#
-#     @token_required
-#     def get(current_user, self, order_id):
-#         '''Fetch a specific order'''
-#         if not self.validate(order_id):
-#             result = {"Message": "No order found for id %d" %(order_id)}
-#             response = jsonify(result)
-#             response.status_code = 404 #Not found
-#         else:
-#             order = self.check_order(order_id)
-#             result = {"Message": order}
-#             response = jsonify(result)
-#             response.status_code = 200 #OK
-#         return response
-#
+class OrderV2(OrdersV2):
+    '''Holds API endpoints with specific orders'''
+
+
+
+    def validate(self, order_id):
+        """Ensure user enters a valid order"""
+        found = False
+        for order in self.orders.get_orders():
+            if order['id'] == order_id:
+                found = True
+        return found
+
+    def check_order(self, order_id):
+        """Get user request"""
+        order = [order for order in self.orders.get_orders()
+                 if order['id'] == order_id
+                 ]
+        return order
+
+    @token_required
+    def get(current_user, self, order_id):
+        '''Fetch a specific order'''
+        if not self.validate(order_id):
+            result = {"Message": "No order found for id %d" %(order_id)}
+            response = jsonify(result)
+            response.status_code = 404 #Not found
+        else:
+            order = self.check_order(order_id)
+            result = {"Message": order}
+            response = jsonify(result)
+            response.status_code = 200 #OK
+        return response
+
 #     @token_required
 #     def put(current_user, self, order_id):
 #         '''Update the status of an order'''
