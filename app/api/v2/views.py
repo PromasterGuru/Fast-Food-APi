@@ -142,58 +142,58 @@ class LoginV2(RegisterV2):
         return response
 
 
-# class OrdersV2(Resource):
-#     """Class that holds the API endpoints that deals with multiple orders"""
-#
-#
-#     orders = FoodOrders()
-#
-#     @token_required
-#     def get(current_user, self):
-#         '''Get all the orders.'''
-#         order = self.orders.get_orders()
-#         if order:
-#             result = {"Message": self.orders.get_orders()}
-#             response = jsonify(result)
-#             response.status_code = 200 #OK
-#         else:
-#             result = {"Message": "No orders found"}
-#             response = jsonify(result)
-#             response.status_code = 404 #OK
-#         return response
-#
-#     @token_required
-#     def post(current_user, self):
-#         '''Place a new order'''
-#         if not request.json or not "order_item" in request.json:
-#             result = {"Message": "Unknown request!!"}
-#             response = jsonify(result)
-#             response.status_code = 400 #Bad request
-#         else:
-#             user_id = current_user[0]['user_id']
-#             item = request.json['order_item']
-#             desc = request.json['description']
-#             order = [order for order in self.orders.get_orders()
-#                      if(
-#                          order['user_id'] == user_id and
-#                          order['order_item'] == item and
-#                          order['description'] == desc
-#                          )
-#                      ]
-#             if not order:
-#                 qty = request.json['quantity']
-#                 order_date = str(datetime.datetime.now())[:19]
-#                 status = "Pedding"
-#                 result = self.orders.set_orders(user_id, item, desc, qty, order_date, status)
-#                 response = jsonify({"Message": result})
-#                 response.status_code = 201 #Created
-#             else:
-#                 result = {"Message": "Dublicate orders not allowed!!"}
-#                 response = jsonify(result)
-#                 response.status_code = 400 #Bad request
-#         return response
-#
-#
+class OrdersV2(Resource):
+    """Class that holds the API endpoints that deals with multiple orders"""
+
+    # 
+    # orders = FoodOrders()
+    #
+    # # @token_required
+    # def get(current_user, self):
+    #     '''Get all the orders.'''
+    #     order = self.orders.get_orders()
+    #     if order:
+    #         result = {"Message": self.orders.get_orders()}
+    #         response = jsonify(result)
+    #         response.status_code = 200 #OK
+    #     else:
+    #         result = {"Message": "No orders found"}
+    #         response = jsonify(result)
+    #         response.status_code = 404 #OK
+    #     return response
+
+    # @token_required
+    def post(self):
+        '''Place a new order'''
+        if not request.json or not "order_item" in request.json:
+            result = {"Message": "Unknown request!!"}
+            response = jsonify(result)
+            response.status_code = 400 #Bad request
+        else:
+            user_id = current_user[0]['user_id']
+            item = request.json['order_item']
+            desc = request.json['description']
+            order = [order for order in self.orders.get_orders()
+                     if(
+                         order['user_id'] == user_id and
+                         order['order_item'] == item and
+                         order['description'] == desc
+                         )
+                     ]
+            if not order:
+                qty = request.json['quantity']
+                order_date = str(datetime.datetime.now())[:19]
+                status = "Pedding"
+                result = self.orders.set_orders(user_id, item, desc, qty, order_date, status)
+                response = jsonify({"Message": result})
+                response.status_code = 201 #Created
+            else:
+                result = {"Message": "Dublicate orders not allowed!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+        return response
+
+
 # class OrderV2(OrdersV2):
 #     '''Holds API endpoints with specific orders'''
 #
