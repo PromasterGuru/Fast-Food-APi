@@ -1,107 +1,107 @@
-# #app/api/v2/views.py
-#
-# '''
-# Implementation of API EndPoint
-# '''
-# import os
-# import re
-# import datetime
+#app/api/v2/views.py
+
+'''
+Implementation of API EndPoint
+'''
+import os
+import re
+import datetime
 # import jwt
-# from werkzeug.security import generate_password_hash, check_password_hash
-# from flask import jsonify, request, make_response
-# from flask_restful import Resource
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask import jsonify, request, make_response
+from flask_restful import Resource
 # from functools import wraps
-#
-# #local import
-# from .models import FoodOrders
-#
-# def token_required(f):
-#     @wraps(f)
-#     def decorated(*args, **kwargs):
-#         '''Validate user token'''
-#         token = None
-#
-#         if 'x-access-token' in request.headers:
-#             token = request.headers['x-access-token']
-#         #token = request.args.get('token')
-#
-#         if not token:
-#             result = {"Message": "Token is missing, please login."}
-#             response = jsonify(result)
-#             response.status_code = 404 #Not found
-#             return response
-#
-#         try:
-#             data = jwt.decode(token,os.getenv('SECRET'))
-#             users = FoodOrders().get_users()
-#             current_user = [current_user for current_user in users
-#                  if current_user['user_id'] == data['user_id']
-#                  ]
-#         except Exception as error:
-#             result = {"Message": "Your token is Invalid, please login."}
-#             response = jsonify(result)
-#             response.status_code = 401 #Un authorized
-#             return response
-#
-#         return f(current_user, *args, **kwargs)
-#
-#     return decorated
-#
-#
-# class RegisterV2(Resource):
-#     """Resigsters new users"""
-#
-#
-#     users = FoodOrders()
-#
-#     def post(self):
-#         '''Register new users'''
-#         if (not request.json
-#                 or not "username" in request.json
-#                 or not "password" in request.json
-#            ):
-#             result = {"Message": "Invalid username or password"}
-#             response = jsonify(result)
-#             response.status_code = 400 #Bad request
-#         else:
-#             uname = request.json['username']
-#             password = request.json['password']
-#             if not uname:
-#                 result = {"Message": "Please enter your username!!"}
-#                 response = jsonify(result)
-#                 response.status_code = 400 #Bad request
-#             elif len(uname) < 6:
-#                 result = {"Message": "Username must contain atleast 6 characters!!"}
-#                 response = jsonify(result)
-#                 response.status_code = 400 #Bad request
-#             elif not password:
-#                 result = {"Message": "Please enter your password!!"}
-#                 response = jsonify(result)
-#                 response.status_code = 400 #Bad request
-#             elif len(password) < 8:
-#                 result = {"Message": "password must have more than 8 characters!!"}
-#                 response = jsonify(result)
-#                 response.status_code = 400 #Bad request
-#             elif re.search('[0-9]', password) is None:
-#                 result = {"Message": "password must contain a atleast one number!!"}
-#                 response = jsonify(result)
-#                 response.status_code = 400 #Bad request
-#             elif re.search('[A-Z]', password) is None:
-#                 result = {"Message": "password must contain a capital letter!!"}
-#                 response = jsonify(result)
-#                 response.status_code = 400 #Bad request
-#             elif uname in self.users.get_users():
-#                 result = {"Message": "User is already registered, please login"}
-#                 response = jsonify(result)
-#                 response.status_code = 401 #An authorized
-#             else:
-#                 password_hash = generate_password_hash(password, method='sha256')
-#                 result = {"Message":self.users.set_users(uname, password_hash)}
-#                 response = jsonify(result)
-#                 response.status_code = 201 #Created
-#         return response
-#
-#
+
+#local import
+from .models import FoodOrders
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        '''Validate user token'''
+        token = None
+
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+        #token = request.args.get('token')
+
+        if not token:
+            result = {"Message": "Token is missing, please login."}
+            response = jsonify(result)
+            response.status_code = 404 #Not found
+            return response
+
+        try:
+            data = jwt.decode(token,os.getenv('SECRET'))
+            users = FoodOrders().get_users()
+            current_user = [current_user for current_user in users
+                 if current_user['user_id'] == data['user_id']
+                 ]
+        except Exception as error:
+            result = {"Message": "Your token is Invalid, please login."}
+            response = jsonify(result)
+            response.status_code = 401 #Un authorized
+            return response
+
+        return f(current_user, *args, **kwargs)
+
+    return decorated
+
+
+class RegisterV2(Resource):
+    """Resigsters new users"""
+
+
+    users = FoodOrders()
+
+    def post(self):
+        '''Register new users'''
+        if (not request.json
+                or not "username" in request.json
+                or not "password" in request.json
+           ):
+            result = {"Message": "Invalid username or password"}
+            response = jsonify(result)
+            response.status_code = 400 #Bad request
+        else:
+            uname = request.json['username']
+            password = request.json['password']
+            if not uname:
+                result = {"Message": "Please enter your username!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif len(uname) < 6:
+                result = {"Message": "Username must contain atleast 6 characters!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif not password:
+                result = {"Message": "Please enter your password!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif len(password) < 8:
+                result = {"Message": "password must have more than 8 characters!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif re.search('[0-9]', password) is None:
+                result = {"Message": "password must contain a atleast one number!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif re.search('[A-Z]', password) is None:
+                result = {"Message": "password must contain a capital letter!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif uname in self.users.get_users():
+                result = {"Message": "User is already registered, please login"}
+                response = jsonify(result)
+                response.status_code = 401 #An authorized
+            else:
+                password_hash = generate_password_hash(password, method='sha256')
+                result = {"Message":self.users.set_users(uname, password_hash)}
+                response = jsonify(result)
+                response.status_code = 201 #Created
+        return response
+
+
 # class LoginV2(RegisterV2):
 #     '''Authenticates users'''
 #
