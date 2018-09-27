@@ -175,7 +175,6 @@ class Menu(Resource):
         response.status_code = 201 #Created
         return response
 
-
 class OrdersV2(Resource):
     """Class that holds the API endpoints that deals with multiple orders"""
 
@@ -184,7 +183,7 @@ class OrdersV2(Resource):
 
     # # @token_required
     def get(self):
-        '''Get all the orders.'''
+        '''User can view their order history.'''
         order = self.orders.get_orders()
         if order:
             result = {"Message": self.orders.get_orders()}
@@ -198,19 +197,27 @@ class OrdersV2(Resource):
 
     # @token_required
     def post(self):
-        '''Place a new order'''
+        '''Use can place a new order'''
         if not request.json or not "order_item" in request.json:
             result = {"Message": "Unknown request!!"}
             response = jsonify(result)
             response.status_code = 400 #Bad request
         else:
             user_id = current_user[0]['user_id']
-            item = request.json['order_item']
+            item = request.json['meal_id']
             desc = request.json['description']
+            meal = [meal for meal in self.orders.get_menu()
+                    if meal['meal_id'] == item
+                    ]
+            if not meal:
+                result = {"Message": "Meal not found"}
+                response = jsonify(result)
+                response.status_code = 404 #Not found
+
             order = [order for order in self.orders.get_orders()
                      if(
                          order['user_id'] == user_id and
-                         order['order_item'] == item and
+                         order['meal_id'] == item and
                          order['description'] == desc
                          )
                      ]
@@ -260,6 +267,43 @@ class OrderV2(OrdersV2):
             result = {"Message": order}
             response = jsonify(result)
             response.status_code = 200 #OK
+        return response
+    def post(self, order_id):
+        '''Use can place a new order'''
+        if not request.json or not "order_item" in request.json:
+            result = {"Message": "Unknown request!!"}
+            response = jsonify(result)
+            response.status_code = 400 #Bad request
+        else:
+            user_id = current_user[0]['user_id']
+            item = request.json['meal_id']
+            desc = request.json['description']
+            meal = [meal for meal in self.orders.get_menu()
+                    if meal['meal_id'] == item
+                    ]
+            if not meal:
+                result = {"Message": "Meal not found"}
+                response = jsonify(result)
+                response.status_code = 404 #Not found
+
+            order = [order for order in self.orders.get_orders()
+                     if(
+                         order['user_id'] == user_id and
+                         order['meal_id'] == item and
+                         order['description'] == desc
+                         )
+                     ]
+            if not order:
+                qty = request.json['quantity']
+                order_date = str(datetime.datetime.now())[:19]
+                status = "Pedding"
+                result = self.orders.set_orders(order_id, user_id, item, desc, qty, order_date, status)
+                response = jsonify({"Message": result})
+                response.status_code = 201 #Created
+            else:
+                result = {"Message": "Dublicate orders not allowed!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
         return response
 
     # @token_required
