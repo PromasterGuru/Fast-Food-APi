@@ -38,9 +38,9 @@ class DB():
 
         meals = """CREATE TABLE IF NOT EXISTS Meals(
             meal_id serial PRIMARY KEY,
-            name varchar(25) NOT NULL,
+            meal_name varchar(25) NOT NULL,
             description varchar(250) NOT NULL,
-            unit_price numeric(3,2) NOT NULL
+            unit_price decimal(5,2) NOT NULL
         );"""
 
         orders = """CREATE TABLE IF NOT EXISTS Orders(
@@ -51,7 +51,7 @@ class DB():
             quantity int NOT NULL,
             order_date date NOT NULL,
             status varchar(15),
-            FOREIGN KEY (user_id) REFERENCES users(user_id)
+            FOREIGN KEY (user_id) REFERENCES users(user_id),
             FOREIGN KEY (meal_id) REFERENCES meals(meal_id)
         );"""
         return [users, meals, orders]
@@ -66,16 +66,13 @@ class DB():
                 cursor.execute(query)
             cursor.close()
             con.commit()
-            result = {"Message": "Database connection established"}
-            response = jsonify(result)
-            response.status_code = 200 #OK
+            result = {"Message": "Database connection established successfully"}
+            print(result)
 
         except (Exception, psycopg2.DatabaseError) as error:
             result = {"Message": error}
-            response = jsonify(result)
-            response.status_code = 404 #Not found
+            print(result)
 
         finally:
             if con is not None:
                 con.close()
-        return response

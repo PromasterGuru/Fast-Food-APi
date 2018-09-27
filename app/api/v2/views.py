@@ -48,7 +48,7 @@ from .models import FoodOrders
 #     return decorated
 
 
-class RegisterV2(Resource):
+class Register(Resource):
     """Resigsters new users"""
 
 
@@ -90,34 +90,40 @@ class RegisterV2(Resource):
                 result = {"Message": "password must contain a capital letter!!"}
                 response = jsonify(result)
                 response.status_code = 400 #Bad request
-            elif uname in self.users.get_users():
-                result = {"Message": "User is already registered, please login"}
-                response = jsonify(result)
-                response.status_code = 401 #An authorized
             else:
-                password_hash = generate_password_hash(password, method='sha256')
-                result = {"Message":self.users.set_users(uname, password_hash)}
-                response = jsonify(result)
-                response.status_code = 201 #Created
+                users = self.users.get_users()
+                user = [user for user in users if user['username'] == uname]
+                if not user:
+                    password_hash = generate_password_hash(password, method='sha256')
+                    result = {"Message":self.users.set_users(uname, password_hash)}
+                    response = jsonify(result)
+                    response.status_code = 201 #Created
+                else:
+                    result = {"Message": "Account is already registered"}
+                    response = jsonify(result)
+                    response.status_code = 401 #An authorized
         return response
 
 
-class LoginV2(RegisterV2):
+class Login(Resource):
     '''Authenticates users'''
 
 
-    def get(self):
+
+    users = FoodOrders()
+
+    def post(self):
         '''Login'''
-        if not request.json
-         or not request.json['username']
-         or not request.json['password']:
+        if (not request.json
+            or not request.json['username']
+            or not request.json['password']):
             result = {"Message": "User not verified, Please login again!"}
             response = jsonify(result)
             response.status_code = 401 #OK
         else:
+            users = self.users.get_users()
             uname = request.json['username']
             password = request.json['password']
-            users = self.users.get_users()
             user = [user for user in users if user['username'] == uname]
             if not user:
                 result = {"Message": "Username not registered, please register!!!"}
@@ -125,7 +131,6 @@ class LoginV2(RegisterV2):
                 response.status_code = 401  #An authorized
             else:
                 if check_password_hash(user[0]['password'],password):
-                    users = self.users.get_users()
                     user = [user for user in users if user['username'] == uname]
                     # token = jwt.encode({'user_id': user[0]['user_id'],
                     #                     'exp': datetime.datetime.utcnow()
@@ -146,47 +151,54 @@ class Menu(Resource):
     """Holds the food menu methods"""
 
 
-    menu = self.menu.get_menu()
+    menu = FoodOrders()
 
     def get(self):
         """Get available menu"""
+        menu = self.menu.get_menu()
         if not menu:
             result = {"Message": "Menu not availlable"}
             response = jsonify(result)
             response.status_code = 404 #Not found
             return response
-        result = {"Message": self.menu.get_menu()}
-        response = jsonify(result)
-        response.status_code = 200 #OK
-        return response
+        else:
+            result = {"Message": self.menu.get_menu()}
+            response = jsonify(result)
+            response.status_code = 200 #OK
+            return response
 
     def post(self):
         """Add a meal option to the menu."""
-        if not request.json or not request.json['name'] or not request.json['description'] or not request.json['price']:
-            result = {"Message": "Please input all menu fieds"}
+        if (not request.json or "name" not in request.json
+            or 'description' not in request.json or 'price' not in request.json
+            ):
+            result = {"Message": "Please recheck your menu fieds and try again"}
             response = jsonify(result)
             response.status_code = 400 #Bad request
-            return jsonify(response)
-        meal_name = response.get['name']
-        meal_desc = response.get['description']
-        meal_price = response.get['price']
-        result{"Message": self.menu.set_menu(meal_name, meal_desc, meal_price)}
-        response = jsonify(result)
-        response.status_code = 201 #Created
-        return response
+            return response
+        else:
+            meal_name = request.json['name']
+            meal_desc = request.json['description']
+            meal_price = request.json['price']
+            result = {"Message": self.menu.set_menu(meal_name, meal_desc, meal_price)}
+            response = jsonify(result)
+            response.status_code = 201 #Created
+            return response
 
-class OrdersV2(Resource):
+class UserOrders(Resource):
     """Class that holds the API endpoints that deals with multiple orders"""
 
 
     orders = FoodOrders()
 
-    # # @token_required
+    # # # @token_required
     def get(self):
-        '''User can view their order history.'''
+        '''Users can view their order history.'''
         order = self.orders.get_orders()
+        user_id = 0
         if order:
-            result = {"Message": self.orders.get_orders()}
+            user_order = [user_order for user_order in order if user_order[user_id] == user_id]
+            result = {"Message": user_order}
             response = jsonify(result)
             response.status_code = 200 #OK
         else:
@@ -198,12 +210,12 @@ class OrdersV2(Resource):
     # @token_required
     def post(self):
         '''Use can place a new order'''
-        if not request.json or not "order_item" in request.json:
+        if not request.json or  "meal_id"  not in request.json:
             result = {"Message": "Unknown request!!"}
             response = jsonify(result)
             response.status_code = 400 #Bad request
         else:
-            user_id = current_user[0]['user_id']
+            user_id = 0
             item = request.json['meal_id']
             desc = request.json['description']
             meal = [meal for meal in self.orders.get_menu()
@@ -213,8 +225,8 @@ class OrdersV2(Resource):
                 result = {"Message": "Meal not found"}
                 response = jsonify(result)
                 response.status_code = 404 #Not found
-
-            order = [order for order in self.orders.get_orders()
+            orders = self.orders.get_orders()
+            order = [order for order in orders
                      if(
                          order['user_id'] == user_id and
                          order['meal_id'] == item and
@@ -222,10 +234,11 @@ class OrdersV2(Resource):
                          )
                      ]
             if not order:
+                order_id = len(orders) + 1
                 qty = request.json['quantity']
                 order_date = str(datetime.datetime.now())[:19]
-                status = "Pedding"
-                result = self.orders.set_orders(user_id, item, desc, qty, order_date, status)
+                status = "New"
+                result = self.orders.set_orders(order_id, user_id, item, desc, qty, order_date, status)
                 response = jsonify({"Message": result})
                 response.status_code = 201 #Created
             else:
@@ -235,23 +248,24 @@ class OrdersV2(Resource):
         return response
 
 
-class OrderV2(OrdersV2):
-    '''Holds API endpoints with specific orders'''
+class AdminOrder(UserOrders):
+    '''Holds API endpoints with admin specific orders'''
 
 
+    orders = UserOrders().orders
 
     def validate(self, order_id):
         """Ensure user enters a valid order"""
         found = False
         for order in self.orders.get_orders():
-            if order['id'] == order_id:
+            if order['order_id'] == order_id:
                 found = True
         return found
 
     def check_order(self, order_id):
         """Get user request"""
         order = [order for order in self.orders.get_orders()
-                 if order['id'] == order_id
+                 if order['order_id'] == order_id
                  ]
         return order
 
@@ -259,7 +273,7 @@ class OrderV2(OrdersV2):
     def get(self, order_id):
         '''Fetch a specific order'''
         if not self.validate(order_id):
-            result = {"Message": "No order found for id %d" %(order_id)}
+            result = {"Message": "No order found for order id %d" %(order_id)}
             response = jsonify(result)
             response.status_code = 404 #Not found
         else:
@@ -268,14 +282,18 @@ class OrderV2(OrdersV2):
             response = jsonify(result)
             response.status_code = 200 #OK
         return response
+
     def post(self, order_id):
-        '''Use can place a new order'''
-        if not request.json or not "order_item" in request.json:
+        '''Admin user can place a new order'''
+        if (not request.json or "order_id" not in request.json
+            or "meal_id" not in request.json
+            or "quantity" not in request.json
+            ):
             result = {"Message": "Unknown request!!"}
             response = jsonify(result)
             response.status_code = 400 #Bad request
         else:
-            user_id = current_user[0]['user_id']
+            user_id = 2,
             item = request.json['meal_id']
             desc = request.json['description']
             meal = [meal for meal in self.orders.get_menu()
@@ -296,7 +314,7 @@ class OrderV2(OrdersV2):
             if not order:
                 qty = request.json['quantity']
                 order_date = str(datetime.datetime.now())[:19]
-                status = "Pedding"
+                status = "New"
                 result = self.orders.set_orders(order_id, user_id, item, desc, qty, order_date, status)
                 response = jsonify({"Message": result})
                 response.status_code = 201 #Created
@@ -315,10 +333,16 @@ class OrderV2(OrdersV2):
             response.status_code = 404 #Not found
         else:
             order = self.check_order(order_id)
+            order_status = ["New", "Processing", "Cancelled", "Complete"]
             status = request.json['status']
-            result = {"Message": self.orders.update_orders(order_id,status)}
-            response = jsonify(result)
-            response.status_code = 200 #OK
+            if status in order_status:
+                result = {"Message": self.orders.update_orders(order_id,status)}
+                response = jsonify(result)
+                response.status_code = 200 #OK
+            else:
+                result = {"Message": "Unkown order status"}
+                response = jsonify(result)
+                response.status_code = 200 #OK
         return response
 #
 #     @token_required
@@ -330,6 +354,25 @@ class OrderV2(OrdersV2):
             response.status_code = 404 #Not found
         else:
             result = {"Message": self.orders.delete_orders(order_id)}
+            response = jsonify(result)
+            response.status_code = 200 #OK
+        return response
+
+
+class AdminOrders(AdminOrder):
+    '''Allow admin to get all orders'''
+
+
+
+    def get(self):
+        '''Fetch all orders'''
+        orders = self.orders.get_orders()
+        if not orders:
+            result = {"Message": "No orders found"}
+            response = jsonify(result)
+            response.status_code = 404 #Not found
+        else:
+            result = {"Message": orders}
             response = jsonify(result)
             response.status_code = 200 #OK
         return response

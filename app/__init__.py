@@ -11,7 +11,7 @@ from flask_restful import Api
 from instance.config import my_app_config
 # from .api.v1.views import Login, Register, Orders, Order
 from .api.v2.database import DB
-from .api.v2.views import LoginV2, RegisterV2, OrdersV2, OrderV2
+from .api.v2.views import Login, Register, UserOrders, AdminOrders, AdminOrder, Menu
 
 def create_app(app_config_name):
     """Wraps the creation of a new Flask object"""
@@ -22,13 +22,16 @@ def create_app(app_config_name):
     app_context.push()
     DB().init_db()
 
-    api = Api(app, prefix="/api")
+    api = Api(app)
 
     api.add_resource(Login,
-                    'auth/login'
+                    '/auth/login'
                     )
     api.add_resource(Register,'/auth/signup')
-    api.add_resource(Orders,'/orders/orders')
-    api.add_resource(Order,'orders/<int:order_id>')
+    api.add_resource(UserOrders,'/users/orders')
+    api.add_resource(AdminOrders,'/orders/')
+    api.add_resource(AdminOrder,'/orders/<int:order_id>')
+    api.add_resource(Menu,'/menu')
+
 
     return app

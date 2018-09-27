@@ -48,11 +48,12 @@ class FoodOrders():
         """Add new menu item"""
         con = DB().create_con()
         cursor = con.cursor()
+        query = """INSERT INTO Meals(meal_name, description, unit_price) VALUES(%s, %s, %s)"""
         try:
             cursor.execute(query,(name, description, unit_price))
             con.commit()
             con.close()
-            return {"Menu item added successfully"}
+            return "Menu item added successfully"
 
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error! %s"%(error))
@@ -69,7 +70,7 @@ class FoodOrders():
             for item in orders:
                 meal = {}
                 meal['meal_id'] = item[0]
-                meal['name'] = item[1]
+                meal['meal_name'] = item[1]
                 meal['description'] = item[2]
                 meal['unit_price'] = item[3]
                 menu.append(meal)
@@ -77,23 +78,36 @@ class FoodOrders():
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error %s"%(error))
 
-    def set_orders(self, user_id, item, desc, qty, order_date, status):
+    def set_orders(self, order_id, user_id, item, desc, qty, order_date, status):
         '''Add new orders'''
         con = DB().create_con()
         cursor = con.cursor()
         try:
+            id = """SELECT*FROM Meals WHERE meal_id = %s;"""
+            meal = """SELECT*FROM Orders WHERE user_id = (%s)
+                                            and meal_id = (%s)
+                                            and description = (%s)
+                                            and quantity = (%s)
+                                            """
             query = """INSERT INTO Orders(
-                                            user_id, order_item, description,
+                                            order_id, user_id, meal_id, description,
                                             quantity, order_date, status
                                         )
-                       VALUES(%s, %s, %s, %s, %s, %s);"""
-            cursor.execute(query,(user_id, item, desc, qty, order_date, status))
-            con.commit()
-            cursor.close()
-            con.close()
-            return ("Order successfully placed")
+                       VALUES(%s, %s, %s, %s, %s, %s, %s);"""
+            cursor.execute(id, [item])
+            if cursor.fetchall():
+                cursor.execute(meal,(user_id, item, desc, qty))
+                if not cursor.fetchall() :
+                    cursor.execute(query,(order_id, user_id, item, desc, qty, order_date, status))
+                    con.commit()
+                    cursor.close()
+                    con.close()
+                    return "Order successfully placed"
+                return "Dublicate order not allowed!"
+            return "No meal found for meal_id %s"%(item)
+
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! %s"%(error))
+            return ("Error! Request denied, please contact admin")
 
     def get_orders(self):
         '''Return a list of food orders'''
@@ -106,7 +120,7 @@ class FoodOrders():
             orders = cursor.fetchall()
             for item in orders:
                 order = {}
-                order['id'] = item[0]
+                order['order_id'] = item[0]
                 order['user_id'] = item[1]
                 order['order_item'] = item[2]
                 order['description'] = item[3]
