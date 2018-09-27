@@ -148,17 +148,17 @@ class Menu(Resource):
 
     menu = self.menu.get_menu()
 
-    # def get(self):
-    #     """Get available menu"""
-    #     if not menu:
-    #         result = {"Message": "Menu not availlable"}
-    #         response = jsonify(result)
-    #         response.status_code = 404 #Not found
-    #         return response
-    #     result = {"Message": self.menu.get_menu()}
-    #     response = jsonify(result)
-    #     response.status_code = 200 #OK
-    #     return response
+    def get(self):
+        """Get available menu"""
+        if not menu:
+            result = {"Message": "Menu not availlable"}
+            response = jsonify(result)
+            response.status_code = 404 #Not found
+            return response
+        result = {"Message": self.menu.get_menu()}
+        response = jsonify(result)
+        response.status_code = 200 #OK
+        return response
 
     def post(self):
         """Add a meal option to the menu."""

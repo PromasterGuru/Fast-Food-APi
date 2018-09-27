@@ -56,10 +56,27 @@ class FoodOrders():
 
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error! %s"%(error))
-    # 
-    # def get_menu(self):
-    #     """"""
-    #
+
+    def get_menu(self):
+        """Get available menu"""
+        con = DB().create_con()
+        cursor = con.cursor()
+        menu = []
+        try:
+            query = """SELECT * FROM Meals;"""
+            cursor.execute(query)
+            orders = cursor.fetchall()
+            for item in orders:
+                meal = {}
+                meal['meal_id'] = item[0]
+                meal['name'] = item[1]
+                meal['description'] = item[2]
+                meal['unit_price'] = item[3]
+                menu.append(meal)
+            return menu
+        except (Exception, psycopg2.DatabaseError) as error:
+            return ("Error %s"%(error))
+
     def set_orders(self, user_id, item, desc, qty, order_date, status):
         '''Add new orders'''
         con = DB().create_con()
