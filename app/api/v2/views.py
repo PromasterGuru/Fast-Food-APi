@@ -102,45 +102,46 @@ class RegisterV2(Resource):
         return response
 
 
-# class LoginV2(RegisterV2):
-#     '''Authenticates users'''
-#
-#
-#     def get(self):
-#         '''Login'''
-#         auth = request.authorization
-#         uname = auth.username
-#         password = auth.password
-#         if not auth or not uname or not password:
-#             result = {"Message": "User not verified, Please login again!"}
-#             response = jsonify(result)
-#             response.status_code = 401 #OK
-#         else:
-#             users = self.users.get_users()
-#             user = [user for user in users if user['username'] == uname]
-#             if not user:
-#                 result = {"Message": "Username not registered, please register!!!"}
-#                 response = jsonify(result)
-#                 response.status_code = 401  #An authorized
-#             else:
-#                 if check_password_hash(user[0]['password'],password):
-#                     users = self.users.get_users()
-#                     user = [user for user in users if user['username'] == uname]
-#                     token = jwt.encode({'user_id': user[0]['user_id'],
-#                                         'exp': datetime.datetime.utcnow()
-#                                         + datetime.timedelta(minutes=15)
-#                                         },os.getenv('SECRET'))
-#                     result = {"Message": "Login successful, Welcome %s" %(uname),
-#                               "Token": token.decode('UTF-8')}
-#                     response = jsonify(result)
-#                     response.status_code = 200 #OK
-#                 else:
-#                     result = {"Message": "Username or password was incorrect!"}
-#                     response = jsonify(result)
-#                     response.status_code = 401 #An authorized
-#         return response
-#
-#
+class LoginV2(RegisterV2):
+    '''Authenticates users'''
+
+
+    def get(self):
+        '''Login'''
+        if not request.json
+         or not request.json['username']
+         or not request.json['password']:
+            result = {"Message": "User not verified, Please login again!"}
+            response = jsonify(result)
+            response.status_code = 401 #OK
+        else:
+            uname = request.json['username']
+            password = request.json['password']
+            users = self.users.get_users()
+            user = [user for user in users if user['username'] == uname]
+            if not user:
+                result = {"Message": "Username not registered, please register!!!"}
+                response = jsonify(result)
+                response.status_code = 401  #An authorized
+            else:
+                if check_password_hash(user[0]['password'],password):
+                    users = self.users.get_users()
+                    user = [user for user in users if user['username'] == uname]
+                    # token = jwt.encode({'user_id': user[0]['user_id'],
+                    #                     'exp': datetime.datetime.utcnow()
+                    #                     + datetime.timedelta(minutes=15)
+                    #                     },os.getenv('SECRET'))
+                    result = {"Message": "Login successful, Welcome %s" %(uname)}
+                            # , "Token": token.decode('UTF-8')}
+                    response = jsonify(result)
+                    response.status_code = 200 #OK
+                else:
+                    result = {"Message": "Username or password was incorrect!"}
+                    response = jsonify(result)
+                    response.status_code = 401 #An authorized
+        return response
+
+
 # class OrdersV2(Resource):
 #     """Class that holds the API endpoints that deals with multiple orders"""
 #
