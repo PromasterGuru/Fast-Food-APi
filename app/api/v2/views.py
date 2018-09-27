@@ -145,22 +145,22 @@ class LoginV2(RegisterV2):
 class OrdersV2(Resource):
     """Class that holds the API endpoints that deals with multiple orders"""
 
-    # 
-    # orders = FoodOrders()
-    #
+    
+    orders = FoodOrders()
+
     # # @token_required
-    # def get(current_user, self):
-    #     '''Get all the orders.'''
-    #     order = self.orders.get_orders()
-    #     if order:
-    #         result = {"Message": self.orders.get_orders()}
-    #         response = jsonify(result)
-    #         response.status_code = 200 #OK
-    #     else:
-    #         result = {"Message": "No orders found"}
-    #         response = jsonify(result)
-    #         response.status_code = 404 #OK
-    #     return response
+    def get(current_user, self):
+        '''Get all the orders.'''
+        order = self.orders.get_orders()
+        if order:
+            result = {"Message": self.orders.get_orders()}
+            response = jsonify(result)
+            response.status_code = 200 #OK
+        else:
+            result = {"Message": "No orders found"}
+            response = jsonify(result)
+            response.status_code = 404 #OK
+        return response
 
     # @token_required
     def post(self):
