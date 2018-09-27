@@ -142,6 +142,40 @@ class LoginV2(RegisterV2):
         return response
 
 
+class Menu(Resource):
+    """Holds the food menu methods"""
+
+
+    menu = self.menu.get_menu()
+
+    # def get(self):
+    #     """Get available menu"""
+    #     if not menu:
+    #         result = {"Message": "Menu not availlable"}
+    #         response = jsonify(result)
+    #         response.status_code = 404 #Not found
+    #         return response
+    #     result = {"Message": self.menu.get_menu()}
+    #     response = jsonify(result)
+    #     response.status_code = 200 #OK
+    #     return response
+
+    def post(self):
+        """Add a meal option to the menu."""
+        if not request.json or not request.json['name'] or not request.json['description'] or not request.json['price']:
+            result = {"Message": "Please input all menu fieds"}
+            response = jsonify(result)
+            response.status_code = 400 #Bad request
+            return jsonify(response)
+        meal_name = response.get['name']
+        meal_desc = response.get['description']
+        meal_price = response.get['price']
+        result{"Message": self.menu.set_menu(meal_name, meal_desc, meal_price)}
+        response = jsonify(result)
+        response.status_code = 201 #Created
+        return response
+
+
 class OrdersV2(Resource):
     """Class that holds the API endpoints that deals with multiple orders"""
 

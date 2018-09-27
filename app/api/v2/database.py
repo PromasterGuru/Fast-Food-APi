@@ -32,29 +32,29 @@ class DB():
         users = """CREATE TABLE IF NOT EXISTS Users(
             user_id serial PRIMARY KEY,
             username varchar(15) NOT NULL,
-            password varchar(100) NOT NULL
+            password varchar(100) NOT NULL,
+            role varchar(10) DEFAULT 'User'
         );"""
 
-        # meals = """CREATE TABLE IF NOT EXISTS Meals(
-        #     meal_id serial PRIMARY KEY,
-        #     name varchar(25) NOT NULL,
-        #     description varchar(250) NOT NULL,
-        #     unit_price numeric(3,2) NOT NULL
-        # );"""
+        meals = """CREATE TABLE IF NOT EXISTS Meals(
+            meal_id serial PRIMARY KEY,
+            name varchar(25) NOT NULL,
+            description varchar(250) NOT NULL,
+            unit_price numeric(3,2) NOT NULL
+        );"""
 
         orders = """CREATE TABLE IF NOT EXISTS Orders(
             order_id serial PRIMARY KEY,
             user_id integer NOT NULL,
-            /*meal_id integer NOT NULL,*/
-            order_item varchar(50) NOT NULL,
+            meal_id integer NOT NULL,
             description varchar(250),
             quantity int NOT NULL,
             order_date date NOT NULL,
             status varchar(15),
             FOREIGN KEY (user_id) REFERENCES users(user_id)
-            /*FOREIGN KEY (meal_id) REFERENCES meals(meal_id)*/
+            FOREIGN KEY (meal_id) REFERENCES meals(meal_id)
         );"""
-        return [users, orders]
+        return [users, meals, orders]
 
     def init_db(self):
         """Execute the DML scripts to create entities"""
