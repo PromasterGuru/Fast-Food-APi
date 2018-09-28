@@ -50,7 +50,7 @@ class TestModels(unittest.TestCase):
         order_date = str(datetime.datetime.now())[:19]
         status = "New"
         self.orders.set_orders(order_id, user_id, item, desc, qty, order_date, status)
-        self.assertNotEqual(len(self.orders.get_orders()), 1)
+        self.assertNotEqual(len(self.orders.get_orders()), 0)
 
 #
 # if __name__ == '__main__':

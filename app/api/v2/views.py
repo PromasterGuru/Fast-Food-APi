@@ -225,7 +225,7 @@ class UserOrders(Resource):
         order = self.orders.get_orders()
         if order:
             user_order = [user_order for user_order in
-                          order if user_order[user_id] == cur_user_id]
+                          order if user_order['user_id'] == cur_user_id]
             result = {"Message": user_order}
             response = jsonify(result)
             response.status_code = 200 #OK
@@ -393,7 +393,7 @@ class AdminOrder(UserOrders):
             return response
 
     @user_token
-    def delete(self, order_id):
+    def delete(self, cur_user_id, order_id):
         '''Delete an order'''
         if (self.roles.get_role(cur_user_id) != "Admin"):
             result = {"Message": "The requested URL requires Admin privilege"}

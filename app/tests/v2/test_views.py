@@ -24,42 +24,61 @@ class TestRouteCases(unittest.TestCase):
         """Test configurations"""
         self.assertEqual(self.app.testing, True)
 
-    # def test_attempt_to_get_orders_when_empty(self):
-    #     '''Test for no records found when no order have beeen placed'''
-    #     newuser = {
-    #             'username': 'Promaster00',
-    #             'password': 'Promaster2018'
-    #     }
-    #     login_resp = self.client().post(
-    #         '/auth/login',
-    #         data=json.dumps(dict(newuser)),
-    #         content_type='application/json'
-    #     )
-    #     user_login = json.loads(login_resp.data.decode())
-    #     resp = self.client().get(
-    #         '/orders/',
-    #         headers=dict(
-    #             Authorization='Bearer ' + json.loads(
-    #                 login_resp.data.decode()
-    #             )['']
-    #         )
-    #     )
-    #     self.assertEqual(resp.status_code, 404, user_login["Message"])
+    def test_attempt_to_get_orders_when_empty(self):
+        '''Test for no records found when no order have beeen placed'''
+        newuser = {
+                'username': 'Promaster00',
+                'password': 'Promaster2018'
+        }
+        login_resp = self.client().post(
+            '/auth/login',
+            data=json.dumps(dict(newuser)),
+            content_type='application/json'
+        )
+        user_login = json.loads(login_resp.data.decode())
+        resp = self.client().get(
+            '/orders/',
+            headers=dict(
+                Authorization='Bearer ' + json.loads(
+                    login_resp.data.decode()
+                )['x-access-token']
+            )
+        )
+        self.assertEqual(resp.status_code, 404, user_login["Message"])
 
-#     def test_user_can_place_an_order_if_not_dublicate(self):
-#         '''Test API can create a new order (POST request)'''
-#         self.client().post(
-#             '/api/v1/orders',
-#             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
-#         )
-#         resp = self.client().post(
-#             '/api/v1/orders',
-#             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
-#         )
-#         response = json.loads(resp.data.decode('utf-8'))
-#         self.assertEqual(resp.status_code, 400, response["Message"])
+    def test_user_can_place_an_order_if_not_dublicate(self):
+        '''Test API can create a new order (POST request)'''
+        newuser = {
+                'username': 'Promaster00',
+                'password': 'Promaster2018'
+        }
+        login_resp = self.client().post(
+            '/auth/login',
+            data=json.dumps(dict(newuser)),
+            content_type='application/json'
+        )
+        user_login = json.loads(login_resp.data.decode())
+        resp = self.client().get(
+            '/orders/',
+            headers=dict(
+                Authorization='Bearer ' + json.loads(
+                    login_resp.data.decode()
+                )['x-access-token']
+            )
+        )
+        self.assertEqual(resp.status_code, 404, user_login["Message"])
+        self.client().post(
+            '/api/v1/orders',
+            data=json.dumps(self.order),
+            headers={'content-type': 'application/json'}
+        )
+        resp = self.client().post(
+            '/api/v1/orders',
+            data=json.dumps(self.order),
+            headers={'content-type': 'application/json'}
+        )
+        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(resp.status_code, 400, response["Message"])
 #
 #     def test_attempt_to_place_orders_without_order_item(self):
 #         '''Test user attempts to place Unknown order i.e. without the order item'''
