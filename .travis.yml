@@ -23,7 +23,7 @@ install:
 #   -psql -c 'GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA'
 
 script:
-  - nosetests --with-coverage --cover-package=app
+  - nosetests --with-coverage --cover-erase --cover-package=app
 
 after_success:
   - coveralls
