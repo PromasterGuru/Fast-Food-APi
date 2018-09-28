@@ -1,38 +1,51 @@
-# #app/tests/v1/test_views.py
-#
-# '''Implement classes and methods for testing API Endpoints.'''
-#
-# import json
-# import unittest
-# from app import create_app
-#
-# class TestRouteCases(unittest.TestCase):
-#     '''This class represents the orders test cases'''
-#
-#     def setUp(self):
-#         '''Define variables and initialize app'''
-#         self.app = create_app(app_config_name="testing")
-#         self.client = self.app.test_client
-#         self.order = {
-#             'order_item': 'Tater tots',
-#             'description': 'These are Pieces of deep-fried, potatoes.',
-#             'quantity': 7,
-#             'status': 'Accepted'
-#         }
-#
-#     def test_config(self):
-#         """Test configurations"""
-#         self.assertEqual(self.app.testing, True)
-#
-#     def test_attempt_to_get_orders_when_empty(self):
-#         '''Test for no records found when no order have beeen placed'''
-#         resp = self.client().get(
-#             '/api/v1/orders',
-#             headers={'content-type': 'application/json'}
-#         )
-#         response = json.loads(resp.data.decode('utf-8'))
-#         self.assertEqual(resp.status_code, 404, response["Message"])
-#
+#app/tests/v2/test_views.py
+
+'''Implement classes and methods for testing API Endpoints.'''
+
+import json
+import unittest
+from app import create_app
+
+class TestRouteCases(unittest.TestCase):
+    '''This class represents the orders test cases'''
+
+    def setUp(self):
+        '''Define variables and initialize app'''
+        self.app = create_app(app_config_name="testing")
+        self.client = self.app.test_client
+        self.order = {
+            'order_item': 'Tater tots',
+            'description': 'These are Pieces of deep-fried, potatoes.',
+            'quantity': 7,
+            'status': 'Accepted'
+        }
+
+    def test_config(self):
+        """Test configurations"""
+        self.assertEqual(self.app.testing, True)
+
+    # def test_attempt_to_get_orders_when_empty(self):
+    #     '''Test for no records found when no order have beeen placed'''
+    #     newuser = {
+    #             'username': 'Promaster00',
+    #             'password': 'Promaster2018'
+    #     }
+    #     login_resp = self.client().post(
+    #         '/auth/login',
+    #         data=json.dumps(dict(newuser)),
+    #         content_type='application/json'
+    #     )
+    #     user_login = json.loads(login_resp.data.decode())
+    #     resp = self.client().get(
+    #         '/orders/',
+    #         headers=dict(
+    #             Authorization='Bearer ' + json.loads(
+    #                 login_resp.data.decode()
+    #             )['']
+    #         )
+    #     )
+    #     self.assertEqual(resp.status_code, 404, user_login["Message"])
+
 #     def test_user_can_place_an_order_if_not_dublicate(self):
 #         '''Test API can create a new order (POST request)'''
 #         self.client().post(
