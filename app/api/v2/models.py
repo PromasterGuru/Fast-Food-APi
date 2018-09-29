@@ -11,7 +11,7 @@ class FoodOrders():
     '''Food order with storage and methods.'''
 
 
-    def set_users(self, uname, password):
+    def add_user(self, uname, password):
         '''Add new users'''
         con = DB().create_con()
         cursor = con.cursor()
@@ -44,7 +44,7 @@ class FoodOrders():
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error %s"%(error))
 
-    def set_menu(self, name, description, unit_price):
+    def create_menu(self, name, description, unit_price):
         """Add new menu item"""
         con = DB().create_con()
         cursor = con.cursor()
@@ -78,7 +78,7 @@ class FoodOrders():
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error %s"%(error))
 
-    def set_orders(self, order_id, user_id, item, desc, qty, order_date, status):
+    def create_orders(self, order_id, user_id, item, desc, qty, order_date, status):
         '''Add new orders'''
         con = DB().create_con()
         cursor = con.cursor()

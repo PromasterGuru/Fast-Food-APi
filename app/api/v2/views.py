@@ -114,7 +114,7 @@ class Register(Resource):
                 user = [user for user in users if user['username'] == uname]
                 if not user:
                     password_hash = generate_password_hash(password, method='sha256')
-                    result = {"Message":self.users.set_users(uname, password_hash)}
+                    result = {"Message":self.users.add_user(uname, password_hash)}
                     response = jsonify(result)
                     response.status_code = 201 #Created
                 else:
@@ -207,7 +207,7 @@ class Menu(Resource):
                 meal_name = request.json['name']
                 meal_desc = request.json['description']
                 meal_price = request.json['price']
-                result = {"Message": self.menu.set_menu(meal_name, meal_desc, meal_price)}
+                result = {"Message": self.menu.create_menu(meal_name, meal_desc, meal_price)}
                 response = jsonify(result)
                 response.status_code = 201 #Created
                 return response
@@ -266,7 +266,7 @@ class UserOrders(Resource):
                 qty = request.json['quantity']
                 order_date = str(datetime.datetime.now())[:19]
                 status = "New"
-                result = self.orders.set_orders(order_id, user_id, item, desc, qty, order_date, status)
+                result = self.orders.create_orders(order_id, user_id, item, desc, qty, order_date, status)
                 response = jsonify({"Message": result})
                 response.status_code = 201 #Created
             else:
@@ -356,7 +356,7 @@ class AdminOrder(UserOrders):
                     qty = request.json['quantity']
                     order_date = str(datetime.datetime.now())[:19]
                     status = "New"
-                    result = self.orders.set_orders(order_id, user_id, item, desc, qty, order_date, status)
+                    result = self.orders.create_orders(order_id, user_id, item, desc, qty, order_date, status)
                     response = jsonify({"Message": result})
                     response.status_code = 201 #Created
                 else:

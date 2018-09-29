@@ -11,7 +11,7 @@
 #         self.food_orders = []
 #         self.users = []
 #
-#     def set_users(self, users):
+#     def add_user(self, users):
 #         '''Add new users'''
 #         self.users.append(users)
 #
@@ -19,7 +19,7 @@
 #         '''Return a dictionary of users'''
 #         return self.users
 #
-#     def set_orders(self, orders):
+#     def create_orders(self, orders):
 #         '''Add new orders'''
 #         self.food_orders.append(orders)
 #

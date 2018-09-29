@@ -43,7 +43,7 @@
 #             "quantity": 5,
 #             "status": "Pedding"
 #         }
-#         self.orders.set_orders(order)
+#         self.orders.create_orders(order)
 #         self.assertEqual(len(self.orders.get_orders()), 1)
 #         self.assertNotEqual(len(self.orders.get_orders()), 0)
 #
@@ -54,7 +54,7 @@
 #             "username": "Promaster",
 #             "password": "Pmutondo12@gmail.com"
 #         }
-#         self.orders.set_users(user)
+#         self.orders.add_user(user)
 #         self.assertEqual(len(self.orders.get_users()), 1)
 #         self.assertNotEqual(len(self.orders.get_users()), 0)
 # #
