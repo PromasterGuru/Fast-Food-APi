@@ -8,7 +8,7 @@ import re
 import datetime
 import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import jsonify, request, make_response
+from flask import jsonify, request, make_response, abort
 from flask_restful import Resource
 from functools import wraps
 
@@ -39,7 +39,7 @@ def user_token(f):
                  ]
             cur_user_id = user_id[0]['user_id']
         except Exception as error:
-            result = {"Message": "Your token is Invalid, please login."}
+            result = {"Message": "Your token is Invalid or has expired, please login."}
             response = jsonify(result)
             response.status_code = 401 #Un authorized
             return response
@@ -49,22 +49,23 @@ def user_token(f):
     return decorated
 
 
-class Role():
+class Role(FoodOrders):
     """Get user role"""
 
 
-    users = FoodOrders()
-    def get_role(self, id):
-        """"Get user role using user id"""
-        users = self.users.get_users()
-        for user_id in users:
-            if user_id['user_id'] == id:
-                user_role = user_id['user_id']
-        if (user_role != "Admin"):
-            result = {"Message": "The requested URL requires Admin privilege"}
+    def user_auth(self, id):
+        """"Authorize user based on their roles"""
+        users = self.get_users()
+        user_id = [user_id for user_id in users if user_id['user_id'] == id]
+        if not user_id:
+            result = {"Message": "No user found for the requested user id"}
             response = jsonify(result)
             response.status_code = 401 #Un authorized
             return response
+        else:
+            role = user_id[0]['role']
+            if (role != "Admin"):
+                abort(401, {"Access Denied": "The requested URL requires Admin privilege"})
 
 
 class Register(Resource):
@@ -76,16 +77,33 @@ class Register(Resource):
     def post(self):
         '''Register new users'''
         if (not request.json
+                or not "email" in request.json
                 or not "username" in request.json
                 or not "password" in request.json
            ):
-            result = {"Message": "Invalid username or password"}
+            result = {"Message": "Some very important fields are missing, "
+                      +"please confirm and fill them"}
             response = jsonify(result)
             response.status_code = 400 #Bad request
         else:
+            email = request.json['email']
             uname = request.json['username']
             password = request.json['password']
-            if not uname:
+            if not email:
+                result = {"Message": "Please enter your email address!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif re.search('[@]', email) is None:
+                result = {"Message": "You entered an invalid email address, "
+                          +" missing '@'"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif re.search('[.]', email) is None:
+                result = {"Message": "You entered an invalid email address, "
+                          +"missing '.'"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif not uname:
                 result = {"Message": "Please enter your username!!"}
                 response = jsonify(result)
                 response.status_code = 400 #Bad request
@@ -114,7 +132,7 @@ class Register(Resource):
                 user = [user for user in users if user['username'] == uname]
                 if not user:
                     password_hash = generate_password_hash(password, method='sha256')
-                    result = {"Message":self.users.add_user(uname, password_hash)}
+                    result = {"Message":self.users.add_user(email, uname, password_hash)}
                     response = jsonify(result)
                     response.status_code = 201 #Created
                 else:
@@ -190,34 +208,69 @@ class Menu(Resource):
     @user_token
     def post(self, cur_user_id):
         """Add a meal option to the menu."""
-        if (self.roles.get_role(cur_user_id) != "Admin"):
-            result = {"Message": "The requested URL requires Admin privilege"}
+        self.roles.user_auth(cur_user_id)
+        if (not request.json or "name" not in request.json
+            or 'description' not in request.json
+            or 'unit_price' not in request.json
+            ):
+            result = {"Message": "Please recheck your menu fieds and try again"}
             response = jsonify(result)
-            response.status_code = 401 #Un authorized
+            response.status_code = 400 #Bad request
             return response
         else:
-            if (not request.json or "name" not in request.json
-                or 'description' not in request.json or 'price' not in request.json
-                ):
-                result = {"Message": "Please recheck your menu fieds and try again"}
-                response = jsonify(result)
-                response.status_code = 400 #Bad request
-                return response
-            else:
-                meal_name = request.json['name']
-                meal_desc = request.json['description']
-                meal_price = request.json['price']
+            meal_name = request.json['name']
+            meal_desc = request.json['description']
+            meal_price = request.json['unit_price']
+            meals = self.menu.get_menu()
+            meal = [meal for meal in meals if meal['meal_name'] == meal_name]
+            if not meal:
                 result = {"Message": self.menu.create_menu(meal_name, meal_desc, meal_price)}
                 response = jsonify(result)
                 response.status_code = 201 #Created
                 return response
+            else:
+                result = {"Message": "Meal name already exists, please use"
+                          +" another meal name"}
+                response = jsonify(result)
+                response.status_code = 403 #Request denied
+                return response
+
+class Users(Login):
+    """Users role managment"""
+
+    @user_token
+    def put(self, cur_user_id, user_id):
+        """Update user role"""
+        if(not request.json
+           or not 'role' in request.json
+           ):
+            result = {"Message": "Please enter all the required fields"}
+            response = jsonify(result)
+            response.status_code = 400 #Bad request
+            return response
+        else:
+            role = request.json['role']
+            users = self.users.get_users()
+            user_ids = [user_ids for user_ids in users
+                        if user_ids['user_id'] == user_id
+                        ]
+            if not user_ids:
+                result = {"Message": "User not found!"}
+                response = jsonify(result)
+                response.status_code = 404 #Not found request
+                return response
+            else:
+                result = {"Message": self.users.update_users(user_id, role)}
+                response = jsonify(result)
+                response.status_code = 200 #Ok
+                return response
+
 
 class UserOrders(Resource):
     """Class that holds the API endpoints that deals with multiple orders"""
 
 
     orders = FoodOrders()
-    roles = Role()
 
     @user_token
     def get(self, cur_user_id):
@@ -276,11 +329,12 @@ class UserOrders(Resource):
         return response
 
 
-class AdminOrder(UserOrders):
+class AdminOrder(Resource):
     '''Holds API endpoints with admin specific orders'''
 
 
-    orders = UserOrders().orders
+    orders = FoodOrders()
+    roles = Role()
 
     def validate(self, order_id):
         """Ensure user enters a valid order"""
@@ -299,117 +353,98 @@ class AdminOrder(UserOrders):
 
     @user_token
     def get(self, cur_user_id, order_id):
-        if (self.roles.get_role(cur_user_id) != "Admin"):
-            result = {"Message": "The requested URL requires Admin privilege"}
+        """Get specific order by order id"""
+        self.roles.user_auth(cur_user_id)
+        '''Fetch a specific order'''
+        if not self.validate(order_id):
+            result = {"Message": "No order found for order id %d" %(order_id)}
             response = jsonify(result)
-            response.status_code = 401 #Un authorized
-            return response
+            response.status_code = 404 #Not found
         else:
-            '''Fetch a specific order'''
-            if not self.validate(order_id):
-                result = {"Message": "No order found for order id %d" %(order_id)}
-                response = jsonify(result)
-                response.status_code = 404 #Not found
-            else:
-                order = self.check_order(order_id)
-                result = {"Message": order}
-                response = jsonify(result)
-                response.status_code = 200 #OK
-            return response
+            order = self.check_order(order_id)
+            result = {"Message": order}
+            response = jsonify(result)
+            response.status_code = 200 #OK
+        return response
 
     @user_token
     def post(self, cur_user_id, order_id):
         '''Admin user can place a new order'''
-        if (self.roles.get_role(cur_user_id) != "Admin"):
-            result = {"Message": "The requested URL requires Admin privilege"}
+        self.roles.user_auth(cur_user_id)
+        if (not request.json
+            or "meal_id" not in request.json
+            or "quantity" not in request.json
+            ):
+            result = {"Message": "Unknown request!!"}
             response = jsonify(result)
-            response.status_code = 401 #Un authorized
-            return response
+            response.status_code = 400 #Bad request
         else:
-            if (not request.json or "order_id" not in request.json
-                or "meal_id" not in request.json
-                or "quantity" not in request.json
-                ):
-                result = {"Message": "Unknown request!!"}
+            user_id = cur_user_id,
+            item = request.json['meal_id']
+            desc = request.json['description']
+            meal = [meal for meal in self.orders.get_menu()
+                    if meal['meal_id'] == item
+                    ]
+            if not meal:
+                result = {"Message": "Meal not found"}
+                response = jsonify(result)
+                response.status_code = 404 #Not found
+
+            order = [order for order in self.orders.get_orders()
+                     if(
+                         order['user_id'] == user_id and
+                         order['meal_id'] == item and
+                         order['description'] == desc
+                         )
+                     ]
+            if not order:
+                qty = request.json['quantity']
+                order_date = str(datetime.datetime.now())[:19]
+                status = "New"
+                result = self.orders.create_orders(order_id, user_id, item, desc, qty, order_date, status)
+                response = jsonify({"Message": result})
+                response.status_code = 201 #Created
+            else:
+                result = {"Message": "Dublicate orders not allowed!!"}
                 response = jsonify(result)
                 response.status_code = 400 #Bad request
-            else:
-                user_id = cur_user_id,
-                item = request.json['meal_id']
-                desc = request.json['description']
-                meal = [meal for meal in self.orders.get_menu()
-                        if meal['meal_id'] == item
-                        ]
-                if not meal:
-                    result = {"Message": "Meal not found"}
-                    response = jsonify(result)
-                    response.status_code = 404 #Not found
-
-                order = [order for order in self.orders.get_orders()
-                         if(
-                             order['user_id'] == user_id and
-                             order['meal_id'] == item and
-                             order['description'] == desc
-                             )
-                         ]
-                if not order:
-                    qty = request.json['quantity']
-                    order_date = str(datetime.datetime.now())[:19]
-                    status = "New"
-                    result = self.orders.create_orders(order_id, user_id, item, desc, qty, order_date, status)
-                    response = jsonify({"Message": result})
-                    response.status_code = 201 #Created
-                else:
-                    result = {"Message": "Dublicate orders not allowed!!"}
-                    response = jsonify(result)
-                    response.status_code = 400 #Bad request
-            return response
+        return response
 
     @user_token
     def put(self, cur_user_id, order_id):
         '''Update the status of an order'''
-        if (self.roles.get_role(cur_user_id) != "Admin"):
-            result = {"Message": "The requested URL requires Admin privilege"}
+        self.roles.user_auth(cur_user_id)
+        if not self.validate(order_id):
+            result = {"Message": "No order found for id %d" %(order_id)}
             response = jsonify(result)
-            response.status_code = 401 #Un authorized
-            return response
+            response.status_code = 404 #Not found
         else:
-            if not self.validate(order_id):
-                result = {"Message": "No order found for id %d" %(order_id)}
+            order = self.check_order(order_id)
+            order_status = ["New", "Processing", "Cancelled", "Complete"]
+            status = request.json['status']
+            if status in order_status:
+                result = {"Message": self.orders.update_orders(order_id,status)}
                 response = jsonify(result)
-                response.status_code = 404 #Not found
+                response.status_code = 200 #OK
             else:
-                order = self.check_order(order_id)
-                order_status = ["New", "Processing", "Cancelled", "Complete"]
-                status = request.json['status']
-                if status in order_status:
-                    result = {"Message": self.orders.update_orders(order_id,status)}
-                    response = jsonify(result)
-                    response.status_code = 200 #OK
-                else:
-                    result = {"Message": "Unkown order status"}
-                    response = jsonify(result)
-                    response.status_code = 200 #OK
-            return response
+                result = {"Message": "Unkown order status"}
+                response = jsonify(result)
+                response.status_code = 200 #OK
+        return response
 
     @user_token
     def delete(self, cur_user_id, order_id):
         '''Delete an order'''
-        if (self.roles.get_role(cur_user_id) != "Admin"):
-            result = {"Message": "The requested URL requires Admin privilege"}
+        self.roles.user_auth(cur_user_id)
+        if not self.validate(order_id):
+            result = {"Message": "No order found for id %d" %(order_id)}
             response = jsonify(result)
-            response.status_code = 401 #Un authorized
-            return response
+            response.status_code = 404 #Not found
         else:
-            if not self.validate(order_id):
-                result = {"Message": "No order found for id %d" %(order_id)}
-                response = jsonify(result)
-                response.status_code = 404 #Not found
-            else:
-                result = {"Message": self.orders.delete_orders(order_id)}
-                response = jsonify(result)
-                response.status_code = 200 #OK
-            return response
+            result = {"Message": self.orders.delete_orders(order_id)}
+            response = jsonify(result)
+            response.status_code = 200 #OK
+        return response
 
 
 class AdminOrders(AdminOrder):
@@ -419,19 +454,14 @@ class AdminOrders(AdminOrder):
     @user_token
     def get(self, cur_user_id):
         '''Fetch all orders'''
-        if (self.roles.get_role(cur_user_id) != "Admin"):
-            result = {"Message": "The requested URL requires Admin privilege"}
+        self.roles.user_auth(cur_user_id)
+        orders = self.orders.get_orders()
+        if not orders:
+            result = {"Message": "No orders found"}
             response = jsonify(result)
-            response.status_code = 401 #Un authorized
-            return response
+            response.status_code = 404 #Not found
         else:
-            orders = self.orders.get_orders()
-            if not orders:
-                result = {"Message": "No orders found"}
-                response = jsonify(result)
-                response.status_code = 404 #Not found
-            else:
-                result = {"Message": orders}
-                response = jsonify(result)
-                response.status_code = 200 #OK
-            return response
+            result = {"Message": orders}
+            response = jsonify(result)
+            response.status_code = 200 #OK
+        return response

@@ -12,7 +12,7 @@ from instance.config import my_app_config
 # from .api.v1.views import Login, Register, Orders, Order
 from .api.v2.database import DB
 from .api.v2.views import Login, Register, UserOrders,\
- AdminOrders, AdminOrder, Menu
+ AdminOrders, AdminOrder, Menu, Users
 
 def create_app(app_config_name):
     """Wraps the creation of a new Flask object"""
@@ -33,7 +33,7 @@ def create_app(app_config_name):
     api.add_resource(AdminOrders,'/orders/')
     api.add_resource(AdminOrder,'/orders/<int:order_id>')
     api.add_resource(Menu,'/menu')
-    # api.add_resource(Logout,'/auth/logout')
+    api.add_resource(Users,'/users/<int:user_id>')
 
 
     return app

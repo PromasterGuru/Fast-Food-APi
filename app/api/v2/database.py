@@ -31,6 +31,7 @@ class DB():
         """DML scripts for creating the tables"""
         users = """CREATE TABLE IF NOT EXISTS Users(
             user_id serial PRIMARY KEY,
+            email varchar(30) NOT NULL,
             username varchar(15) NOT NULL,
             password varchar(100) NOT NULL,
             role varchar(10) DEFAULT 'User'

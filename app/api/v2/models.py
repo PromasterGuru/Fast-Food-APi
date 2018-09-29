@@ -11,13 +11,13 @@ class FoodOrders():
     '''Food order with storage and methods.'''
 
 
-    def add_user(self, uname, password):
+    def add_user(self, email, uname, password):
         '''Add new users'''
         con = DB().create_con()
         cursor = con.cursor()
         try:
-            query = """INSERT INTO Users(username,password) VALUES(%s, %s);"""
-            cursor.execute(query,(uname,password))
+            query = """INSERT INTO Users(email, username, password) VALUES(%s, %s, %s);"""
+            cursor.execute(query,(email, uname, password))
             con.commit()
             cursor.close()
             con.close()
@@ -31,14 +31,16 @@ class FoodOrders():
         cursor = con.cursor()
         cur_users = []
         try:
-            query = """SELECT user_id, username, password FROM Users;"""
+            query = """SELECT user_id, email, username, role, password FROM Users;"""
             cursor.execute(query)
             users = cursor.fetchall()
             for user in users:
                 my_user = {}
                 my_user['user_id'] = user[0]
-                my_user['username'] = user[1]
-                my_user['password'] = user[2]
+                my_user['email'] = user[1]
+                my_user['username'] = user[2]
+                my_user['role'] = user[3]
+                my_user['password'] = user[4]
                 cur_users.append(my_user)
             return cur_users
         except (Exception, psycopg2.DatabaseError) as error:
@@ -143,6 +145,20 @@ class FoodOrders():
             cursor.close()
             con.close()
             return ("Order successfully updated")
+        except (Exception, psycopg2.DatabaseError) as error:
+            return ("Error! %s"%(error))
+
+    def update_users(self, user_id, role):
+        """Update order status"""
+        con = DB().create_con()
+        cursor = con.cursor()
+        query = """UPDATE Users SET role = %s WHERE user_id = %s;"""
+        try:
+            cursor.execute(query,(role,user_id))
+            con.commit()
+            cursor.close()
+            con.close()
+            return "Users roles successfully changed to %s" %(role)
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error! %s"%(error))
 
