@@ -6,237 +6,91 @@ import json
 import unittest
 import jwt
 import os
-from app import create_app
+from .base import BaseTestCase
 
 
-class TestAuthentication(unittest.TestCase):
+class TestAuthentication(BaseTestCase):
     '''This class represents user authentication unit tests'''
 
-
-    def setUp(self):
-        '''Define variables and initialize app'''
-        self.app = create_app(app_config_name="testing")
-        self.client = self.app.test_client
 
     def test_config(self):
         """Test configurations"""
         self.assertEqual(self.app.testing, True)
 
-    def test_register_for_new_users(self):
-        """User can register for a new account"""
-        user = {
-            'user_id': 1,
-            'username': 'Promaster@@',
-            'password': 'Promaster2018',
-        }
-        resp = self.client().post(
-            '/auth/signup',
-            data=json.dumps(user),
-            headers={'content-type': 'application/json'}
-        )
+    def test_user_registration(self):
+        """User registration"""
+        # Try to register an already registered Account
+        resp = self.register_user()
         response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 201, response['Message'])
+        self.assertEqual(response['Message'], 'Promaster2020 registered successfully')
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertEqual(resp.status_code, 201)
+        self.assertNotEqual(resp.status_code, 200)
 
-
-    def test_register_for_registered_users(self):
-        """User should not be allowed to register twice"""
-        user = {
-            'user_id': 1,
-            'username': 'Promaster@@',
-            'password': 'Promaster2018',
-        }
-        resp = self.client().post(
-            '/auth/signup',
-            data=json.dumps(user),
-            headers={'content-type': 'application/json'}
-        )
+        resp = self.register_existing_user()
         response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 401, response['Message'])
-
-    def test_register_with_empty_username(self):
-        """Test when username is left blank"""
-        newuser = {
-            "user_id": 1,
-            "username": "",
-            "password": "Promaster2018"
-        }
-        resp = self.client().post(
-            '/auth/signup',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
-        response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 400, response['Message'])
-
-    def test_register_with_short_username(self):
-        """When username is less than 6 characters"""
-        newuser = {
-            "user_id": 1,
-            "username": "paul",
-            "password": "Promaster2018"
-        }
-        resp = self.client().post(
-            '/auth/signup',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
-        response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 400, response['Message'])
-
-    def test_register_without_password(self):
-        """User tries to register without a password"""
-        newuser = {
-            "user_id": 1,
-            "username": "Promaster",
-            "password": ""
-        }
-        resp = self.client().post(
-            '/auth/signup',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
-        response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 400, response['Message'])
-
-    def test_register_with_short_password(self):
-        """Password less than 8 alphanumeric characters"""
-        newuser = {
-            "user_id": 1,
-            "username": "Promaster",
-            "password": "Pm2018"
-        }
-        resp = self.client().post(
-            '/auth/signup',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
-        response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 400, response['Message'])
-
-    def test_register_for_password_without_numbers(self):
-        """Password without atleast one numeric character"""
-        newuser = {
-            "user_id": 1,
-            "username": "Promaster",
-            "password": "Promaster"
-        }
-        resp = self.client().post(
-            '/auth/signup',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
-        response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 400, response['Message'])
-
-    def test_register_for_password_without_capital_letters(self):
-        """Password without atleast one capital letter"""
-        newuser = {
-            "user_id": 1,
-            "username": "Promaster",
-            "password": "promaster2018"
-        }
-        resp = self.client().post(
-            '/auth/signup',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
-        response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 400, response['Message'])
-
-    def test_register_bad_request_with_username(self):
-        """Username not included in the request"""
-        newuser = {
-            "password": "promaster2018"
-        }
-        resp = self.client().post(
-            '/auth/signup',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
-        response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 400, response['Message'])
-
-    def test_register_bad_request_with_password(self):
-        """Password not included in the request"""
-        newuser = {
-            "username": "Promaster"
-        }
-        resp = self.client().post(
-            '/auth/signup',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
-        response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 400, response['Message'])
-
-    def test_login_with_valid_credentials(self):
-        """Login with valid username and password"""
-        newuser = {
-            "user_id": 52156,
-            "username": "PromasterXRE",
-            "password": "Promaster2018"
-        }
-        self.client().post(
-            '/auth/signup',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
-        resp = self.client().post(
-            '/auth/login',
-            data=json.dumps(newuser),
-            headers={'content-type': 'application/json'}
-        )
-        response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 200, response['Message'])
-
-    def test_login_with_unregistered_username(self):
-        """User enters unregistered username"""
-        newuser = {
-                'username': 'Promaster00',
-                'password': 'Promaster2018'
-        }
-        resp = self.client().post(
-            '/auth/login',
-            data = json.dumps(newuser),
-            headers = {
-                        'content-type': 'application/json'
-                    }
-        )
-        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(response['Message'], 'Account is already registered')
+        self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 401)
+        self.assertNotEqual(resp.status_code, 201)
 
-    def test_login_with_wrong_password(self):
-        """Login with wrong password"""
-        newuser = {
-                'username': 'Johnson784',
-                'password': 'Promaster2018'
-        }
-        resp = self.client().post(
-            '/auth/login',
-            data = json.dumps(newuser),
-            headers = {
-                        'content-type': 'application/json'
-                    }
-        )
+    def test_user_registration_with_invalid_email(self):
+        """User registration with invalid email, missing '@'  """
+        resp = self.register_user_invalid_email()
         response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 401, response['Message'])
+        self.assertEqual(response['Message'], "You entered an invalid email address, "
+                  +"missing '@' or '.'")
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertEqual(resp.status_code, 400)
+        self.assertNotEqual(resp.status_code, 201)
 
-    def test_login_for_bad_requests(self):
-        """Test login with no username or password"""
-        newuser = {
-                'username': 'Johnson784',
-                'password': 'Promaster2018'
-        }
-        resp = self.client().post(
-            '/auth/login',
-            data = json.dumps(newuser),
-            headers = {
-                        'content-type': 'application/json'
-                    }
-        )
+    def test_user_registration_with_invalid_username(self):
+        """User registration with invalid username, less than 6 characters"""
+        resp = self.register_user_invalid_username()
         response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(resp.status_code, 401, response['Message'])
+        self.assertEqual(response['Message'], "Username must contain atleast 6 characters!!")
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertEqual(resp.status_code, 400)
+        self.assertNotEqual(resp.status_code, 201)
 
-#
-# if __name__ == "__main__":
-#     unittest.main()
+    def test_user_registration_with_short_password(self):
+        """User registration with password having less than 8 characters"""
+        resp = self.register_user_short_password()
+        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(response['Message'], "password must have more than 8 characters!!")
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertEqual(resp.status_code, 400)
+        self.assertNotEqual(resp.status_code, 201)
+
+    def test_user_registration_password_missing_numeric_characters(self):
+        """User registration when passord has no numeric characters"""
+        resp = self.register_user_non_numeric_password()
+        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(response['Message'], "password must contain a at least one number!!")
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertEqual(resp.status_code, 400)
+        self.assertNotEqual(resp.status_code, 201)
+
+    def test_user_registration_password_missing_numeric_characters(self):
+        """User registration when password has no upper case character"""
+        resp = self.register_user_password_has_no_caps()
+        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(response['Message'], "password must contain a capital letter!!")
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertEqual(resp.status_code, 400)
+        self.assertNotEqual(resp.status_code, 201)
+
+    def test_user_login(self):
+        """Test user login with valid credentials"""
+        #Test user login after test_user_registration
+        resp = self.user_login()
+        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(response['Message'], 'Username or password was incorrect!')
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertEqual(resp.status_code, 401)
+        self.assertNotEqual(resp.status_code, 201)
+        self.assertNotEqual(resp.status_code, 400)
+        self.assertNotEqual(resp.status_code, 404)
+
+# # if __name__ == "__main__":
+# #     unittest.main()

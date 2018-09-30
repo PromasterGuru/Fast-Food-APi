@@ -1,8 +1,6 @@
 #app/api/v2/models.py
 
-import os
 import psycopg2
-from flask import json,jsonify
 from .database import DB
 
 '''Food order class with storage model and methods.'''
@@ -17,13 +15,13 @@ class FoodOrders():
         cursor = con.cursor()
         try:
             query = """INSERT INTO Users(email, username, password) VALUES(%s, %s, %s);"""
-            cursor.execute(query,(email, uname, password))
+            cursor.execute(query, (email, uname, password))
             con.commit()
             cursor.close()
             con.close()
-            return ("%s registered successfully"%(uname))
+            return ("%s registered successfully" %uname)
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error %s"%(error))
+            return ("Error %s" %error)
 
     def get_users(self):
         '''Return a dictionary of users'''
@@ -58,7 +56,7 @@ class FoodOrders():
             return "Menu item added successfully"
 
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! %s"%(error))
+            return ("Error! %s" %error)
 
     def get_menu(self):
         """Get available menu"""
@@ -74,11 +72,11 @@ class FoodOrders():
                 meal['meal_id'] = item[0]
                 meal['meal_name'] = item[1]
                 meal['description'] = item[2]
-                meal['unit_price'] = item[3]
+                meal['unit_price'] = str(item[3])
                 menu.append(meal)
             return menu
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error %s"%(error))
+            return ("Error %s" %error)
 
     def create_orders(self, order_id, user_id, item, desc, qty, order_date, status):
         '''Add new orders'''
@@ -132,7 +130,7 @@ class FoodOrders():
                 foods.append(order)
             return foods
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error %s"%(error))
+            return ("Error %s" %error)
 
     def update_orders(self, id, status):
         """Update order status"""
@@ -146,7 +144,7 @@ class FoodOrders():
             con.close()
             return ("Order successfully updated")
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! %s"%(error))
+            return ("Error! %s" %error)
 
     def update_users(self, user_id, role):
         """Update order status"""
@@ -158,9 +156,9 @@ class FoodOrders():
             con.commit()
             cursor.close()
             con.close()
-            return "Users roles successfully changed to %s" %(role)
+            return "Users roles successfully changed to %s" %role
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! %s"%(error))
+            return ("Error! %s" %error)
 
     def delete_orders(self, order_id):
         """Delete an order"""
@@ -174,4 +172,4 @@ class FoodOrders():
             con.close()
             return ("Order successfully deleted")
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! %s"%(error))
+            return ("Error! %s" %error)
