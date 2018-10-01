@@ -1,8 +1,8 @@
 language: python
 
-# env:
-# export DATABASE_URL='postgresql://postgres:postgres@localhost/fastfoodfast'
-# export FLASK_ENV='development'
+env:
+  -export DATABASE_URL='postgresql://postgres:postgres@localhost/fastfoodfast'
+  -export FLASK_ENV='development'
 
 python:
   - "3.6"
@@ -12,18 +12,18 @@ install:
   - pip install coveralls
   - pip install nose
 
-# services:
-#   -postgresql
+services:
+  -postgresql
 
-# addon:
-#   -postgresql: "9.6"
+addon:
+  -postgresql: "9.6"
 
-# before_script:
-#   -psql -c 'CREATE DATABASE fastfoodfast' -u postgres
-#   -psql -c 'GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA'
+before_script:
+  -psql -c 'CREATE DATABASE fastfoodfast' -u postgres
+  -psql -c 'GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA'
 
 script:
-  - nosetests --with-coverage --cover-erase --cover-package=app
+  - nosetests --with-coverage --cover-package=app
 
 after_success:
   - coveralls
