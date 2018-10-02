@@ -28,7 +28,7 @@
 #         '''Test for no records found when no order have beeen placed'''
 #         resp = self.client().get(
 #             '/api/v1/orders',
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 404, response["Message"])
@@ -38,12 +38,12 @@
 #         self.client().post(
 #             '/api/v1/orders',
 #             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         resp = self.client().post(
 #             '/api/v1/orders',
 #             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 400, response["Message"])
@@ -58,7 +58,7 @@
 #         resp = self.client().post(
 #             '/api/v1/orders',
 #             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 400, response["Message"])
@@ -67,7 +67,7 @@
 #         '''Test API can return all the orders (GET request)'''
 #         resp = self.client().get(
 #             '/api/v1/orders',
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 200, response["Message"])
@@ -77,11 +77,11 @@
 #         self.client().post(
 #             '/api/v1/orders',
 #             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         resp = self.client().get(
 #             '/api/v1/orders/1',
-#             headers={'Content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 200, response["Message"])
@@ -91,11 +91,11 @@
 #         self.client().post(
 #             '/api/v1/orders',
 #             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         resp = self.client().get(
 #             '/api/v1/orders/2',
-#             headers={'Content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 404, response["Message"])
@@ -105,12 +105,12 @@
 #         self.client().post(
 #             '/api/v1/orders',
 #             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         resp = self.client().put(
 #             '/api/v1/orders/1',
 #             data=json.dumps({'status': 'Accepted'}),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 200, response["Message"])
@@ -120,12 +120,12 @@
 #         self.client().post(
 #             '/api/v1/orders',
 #             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         resp = self.client().put(
 #             '/api/v1/orders/2',
 #             data=json.dumps({'status': 'Accepted'}),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 404, response["Message"])
@@ -135,11 +135,11 @@
 #         self.client().post(
 #             '/api/v1/orders',
 #             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         resp = self.client().delete(
 #             'api/v1/orders/1',
-#             headers={'Content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 200, response["Message"])
@@ -149,11 +149,11 @@
 #         self.client().post(
 #             '/api/v1/orders',
 #             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         resp = self.client().delete(
 #             'api/v1/orders/2',
-#             headers={'Content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 404, response["Message"])
@@ -163,7 +163,7 @@
 #         resp = self.client().post(
 #             '/api/v1/orders/',
 #             data=json.dumps(self.order),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         self.assertEqual(resp.status_code, 404)
 #
@@ -171,7 +171,7 @@
 #         '''Test API should return an error: Not found'''
 #         resp = self.client().get(
 #             '/api/v1/orders/',
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         self.assertEqual(resp.status_code, 404)
 #
@@ -179,7 +179,7 @@
 #         '''Test API should return an error: Not found'''
 #         resp = self.client().get(
 #             '/api/v1/orders/-1',
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         self.assertEqual(resp.status_code, 404)
 #
@@ -188,7 +188,7 @@
 #         resp = self.client().put(
 #             '/api/v1/orders/-1',
 #             data=json.dumps({'status': 'Accepted'}),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         self.assertEqual(resp.status_code, 404)
 #

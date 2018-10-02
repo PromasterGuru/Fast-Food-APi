@@ -35,7 +35,11 @@ class Role(FoodOrders):
         else:
             role = user_id[0]['role']
             if role != "Admin":
-                abort(401, {"Access Denied": "The requested URL requires Admin privilege"})
+                result = {"Message": "Access Denied, the requested URL requires Admin privilege"}
+                response = jsonify(result)
+                response.status_code = 401
+                return response
+                # abort(401, {"Message": "Access Denied, the requested URL requires Admin privilege"})
 
 
 class Register(Resource):
@@ -181,13 +185,14 @@ class Menu(Resource):
             response.status_code = 400 #Bad request
             return response
         else:
+            menu_id  = len(self.menu.get_menu())+1
             meal_name = request.json['name']
             meal_desc = request.json['description']
             meal_price = request.json['unit_price']
             meals = self.menu.get_menu()
             meal = [meal for meal in meals if meal['meal_name'] == meal_name]
             if not meal:
-                result = {"Message": self.menu.create_menu(meal_name, meal_desc, meal_price)}
+                result = {"Message": self.menu.create_menu(menu_id, meal_name, meal_desc, meal_price)}
                 response = jsonify(result)
                 response.status_code = 201 #Created
                 return response
@@ -262,7 +267,7 @@ class UserOrders(Resource):
                 or "description" not in request.json
                 or "quantity" not in request.json
            ):
-            result = {"Message": "Unknown request! some fields missing!"}
+            result = {"Message": result}#"Unknown request! some fields missing!"}
             response = jsonify(result)
             response.status_code = 400 #Bad request
         else:

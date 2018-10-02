@@ -19,12 +19,8 @@ addon:
   -postgresql: "9.6"
 
 before_script:
-  -psql -c "create role postgres with superuser login password 'postgres';" -U postgres
-  -psql -c 'create database fastfoodfast;' -U postgres
-  -psql -c 'alter database fastfoodfast owner to postgres' -U postgres
-  #
-  # -psql -c 'CREATE DATABASE fastfoodfast' -u postgres
-  # -psql -c 'GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA'
+  -psql -c "CREATE DATABASE fastfoodfast;" -U postgres
+  -psql -c "CREATE USER promaster WITH PASSWORD 'postgres';" -U postgres
 
 script:
   - nosetests --with-coverage --cover-package=app

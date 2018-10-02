@@ -44,13 +44,13 @@ class FoodOrders():
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error %s"%(error))
 
-    def create_menu(self, name, description, unit_price):
+    def create_menu(self, meal_id, name, description, unit_price):
         """Add new menu item"""
         con = DB().create_con()
         cursor = con.cursor()
-        query = """INSERT INTO Meals(meal_name, description, unit_price) VALUES(%s, %s, %s)"""
+        query = """INSERT INTO Meals(meal_id, meal_name, description, unit_price) VALUES(%s, %s, %s, %s)"""
         try:
-            cursor.execute(query,(name, description, unit_price))
+            cursor.execute(query,(meal_id, name, description, unit_price))
             con.commit()
             con.close()
             return "Menu item added successfully"
@@ -122,7 +122,7 @@ class FoodOrders():
                 order = {}
                 order['order_id'] = item[0]
                 order['user_id'] = item[1]
-                order['order_item'] = item[2]
+                order['meal_id'] = item[2]
                 order['description'] = item[3]
                 order['quantity'] = item[4]
                 order['order_date'] = item[5]
@@ -173,3 +173,17 @@ class FoodOrders():
             return ("Order successfully deleted")
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error! %s" %error)
+
+    def teatDown(self):
+        """Reset test db"""
+        con = DB().create_con()
+        cursor = con.cursor()
+        drp_orders = """drop table orders cascade;"""
+        drp_meals = """drop table meals cascade;"""
+        drp_users = """drop table users cascade;"""
+        queries = [drp_orders, drp_meals, drp_orders]
+        for query in queries:
+            cursor.execute(query)
+            con.commit()
+        cursor.close()
+        con.close()

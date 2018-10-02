@@ -31,7 +31,7 @@
 #         resp = self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(user),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 201, response['Message'])
@@ -46,7 +46,7 @@
 #         resp = self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(user),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 401, response['Message'])
@@ -61,7 +61,7 @@
 #         resp = self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(newuser),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 400, response['Message'])
@@ -76,7 +76,7 @@
 #         resp = self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(newuser),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 400, response['Message'])
@@ -91,7 +91,7 @@
 #         resp = self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(newuser),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 400, response['Message'])
@@ -106,7 +106,7 @@
 #         resp = self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(newuser),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 400, response['Message'])
@@ -121,7 +121,7 @@
 #         resp = self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(newuser),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 400, response['Message'])
@@ -136,7 +136,7 @@
 #         resp = self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(newuser),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 400, response['Message'])
@@ -149,7 +149,7 @@
 #         resp = self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(newuser),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 400, response['Message'])
@@ -162,7 +162,7 @@
 #         resp = self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(newuser),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         response = json.loads(resp.data.decode('utf-8'))
 #         self.assertEqual(resp.status_code, 400, response['Message'])
@@ -201,7 +201,7 @@
 #         self.client().post(
 #             '/api/v1/register',
 #             data=json.dumps(newuser),
-#             headers={'content-type': 'application/json'}
+#             headers={'content_type': 'application/json'}
 #         )
 #         resp = self.client().get(
 #             '/api/v1/login',

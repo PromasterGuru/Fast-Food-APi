@@ -29,15 +29,15 @@ class DB():
         """DML scripts for creating the tables"""
         users_tb = """CREATE TABLE IF NOT EXISTS Users(
             user_id serial PRIMARY KEY,
-            email varchar(30) UNIQUE,
-            username varchar(15) UNIQUE,
+            email varchar(30) NOT NULL,
+            username varchar(15) NOT NULL,
             password varchar(250) NOT NULL,
             role varchar(10) DEFAULT 'User'
         );"""
 
         meals_tb = """CREATE TABLE IF NOT EXISTS Meals(
             meal_id serial PRIMARY KEY,
-            meal_name varchar(25) UNIQUE,
+            meal_name varchar(25) NOT NULL,
             description varchar(250) NOT NULL,
             unit_price decimal(5,2) NOT NULL
         );"""
@@ -73,8 +73,8 @@ class DB():
 
             admin_user = """INSERT INTO Users(user_id, email, username, password, role)
                             VALUES(1, 'pmutondo12@gmail.com', 'Promaster',
-                                   'sha256$qQyrQqaY$8359e68f694591d21780dfc1fc18
-                                   40f7afba666ce2e471681692e8a80912bfaf', 'Admin');"""
+                                   'sha256$2Um2FMvb$e61bf3f929321a777fb3d52b28f384b2a8c48c4810380279d1f933a767b14e62',
+                                    'Admin');"""
 
             menu_option = """INSERT INTO Meals(meal_id, meal_name, description,
                                          unit_price)
