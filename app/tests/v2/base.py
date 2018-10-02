@@ -16,8 +16,6 @@ class BaseTestCase(unittest.TestCase):
         """Define and Initalize test variables"""
         self.app = create_app(config_name='testing')
         self.orders = FoodOrders()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
         self.client = self.app.test_client
 
         self.valid_user = {
@@ -247,6 +245,7 @@ class BaseTestCase(unittest.TestCase):
                 "Authorization": access_token
             })
 
-    def drop_tables(self):
+    def tearDown(self):
         """Delete all the testing tables"""
-        self.orders.teatDown()
+        with self.app.app_context():
+            self.orders.drop_tables()

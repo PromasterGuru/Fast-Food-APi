@@ -174,14 +174,14 @@ class FoodOrders():
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error! %s" %error)
 
-    def teatDown(self):
+    def drop_tables(self):
         """Reset test db"""
         con = DB().create_con()
         cursor = con.cursor()
         drp_orders = """drop table orders cascade;"""
         drp_meals = """drop table meals cascade;"""
         drp_users = """drop table users cascade;"""
-        queries = [drp_orders, drp_meals, drp_orders]
+        queries = [drp_orders, drp_meals, drp_users]
         for query in queries:
             cursor.execute(query)
             con.commit()

@@ -2,6 +2,7 @@ language: python
 
 env:
   - export DATABASE_URL='postgresql://postgres:postgres@localhost/fastfoodfast'
+  - export DATABASE_TEST_URL='postgresql://postgres:postgres@localhost/fastfoodfast_testdb'
   - export FLASK_ENV='development'
 
 python:

@@ -5,6 +5,7 @@ Create database entities
 """
 
 import os
+from flask import current_app
 from urllib.parse import urlparse
 import psycopg2
 
@@ -15,7 +16,7 @@ class DB():
 
     def create_con(self):
         """Create database connection"""
-        result = os.getenv('DATABASE_URL')
+        result = current_app.config.get('DATABASE_URL')
         url = urlparse(result)
         connection = psycopg2.connect(
             database=url.path[1:],

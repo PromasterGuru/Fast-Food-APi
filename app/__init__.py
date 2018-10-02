@@ -23,9 +23,10 @@ def create_app(config_name):
     app.config.from_pyfile('config.py')
     app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
     JWTManager(app)
+    with app.app_context():
+        DB().init_db()
     # app_context = app.app_context()
     # app_context.push()
-    DB().init_db()
 
     api = Api(app)
 

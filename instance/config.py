@@ -13,7 +13,7 @@ class Config():
 class DevelopmentConfig(Config):
     """Enable Debugging mode in Development"""
     DEBUG = True
-    # DATABASE_URL = os.getenv('DATABASE_URL')
+    DATABASE_URL = os.getenv('DATABASE_URL')
 
 class ProductionConfig(Config):
     """Disable Debugging and Testing mode in Production"""
@@ -25,7 +25,8 @@ class TestingConfig(Config):
     """Enable Debugging and Testing mode in Testing"""
     DEBUG = True
     TESTING = True
-    # DATABASE_URL = os.getenv('DATABASE_TESTDB_URL')
+    DATABASE_URL = os.getenv('DATABASE_TEST_URL')
+    # DATABASE_URL = 'postgresql://postgres:postgres@localhost/fastfoodfast_testdb'
 
 
 class StaggingConfig(Config):
