@@ -1,8 +1,8 @@
 language: python
 
 env:
-  -export DATABASE_URL='postgresql://postgres:postgres@localhost/fastfoodfast'
-  -export FLASK_ENV='development'
+  - export DATABASE_URL='postgresql://postgres:postgres@localhost/fastfoodfast'
+  - export FLASK_ENV='development'
 
 python:
   - "3.6"
