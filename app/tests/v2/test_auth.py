@@ -16,16 +16,16 @@
 #     def test_config(self):
 #         """Test configurations"""
 #         self.assertEqual(self.app.testing, True)
-#     #
-#     # def test_user_registration(self):
-#     #     """User registration"""
-#     #     # Try to register an already registered Account
-#     #     resp = self.register_user()
-#     #     response = json.loads(resp.data.decode('utf-8'))
-#     #     self.assertEqual(response['Message'], 'Promaster2020 registered successfully')
-#     #     self.assertTrue(resp.content_type == 'application/json')
-#     #     self.assertEqual(resp.status_code, 201)
-#     #     self.assertNotEqual(resp.status_code, 200)
+#
+#     def test_user_registration(self):
+#         """User registration"""
+#         # Try to register an already registered Account
+#         resp = self.register_user()
+#         response = json.loads(resp.data.decode('utf-8'))
+#         self.assertEqual(response['Message'], 'Promaster2020 registered successfully')
+#         self.assertTrue(resp.content_type == 'application/json')
+#         self.assertEqual(resp.status_code, 201)
+#         self.assertNotEqual(resp.status_code, 200)
 #
 #         resp = self.register_existing_user()
 #         response = json.loads(resp.data.decode('utf-8'))
@@ -62,14 +62,14 @@
 #         self.assertEqual(resp.status_code, 400)
 #         self.assertNotEqual(resp.status_code, 201)
 #
-#     # def test_user_registration_password_missing_numeric_characters(self):
-#     #     """User registration when passord has no numeric characters"""
-#     #     resp = self.register_user_non_numeric_password()
-#     #     response = json.loads(resp.data.decode('utf-8'))
-#     #     self.assertEqual(response['Message'], "password must contain a at least one number!!")
-#     #     self.assertTrue(resp.content_type == 'application/json')
-#     #     self.assertEqual(resp.status_code, 400)
-#     #     self.assertNotEqual(resp.status_code, 201)
+#     def test_user_registration_password_missing_numeric_characters(self):
+#         """User registration when passord has no numeric characters"""
+#         resp = self.register_user_non_numeric_password()
+#         response = json.loads(resp.data.decode('utf-8'))
+#         self.assertEqual(response['Message'], "password must contain a at least one number!!")
+#         self.assertTrue(resp.content_type == 'application/json')
+#         self.assertEqual(resp.status_code, 400)
+#         self.assertNotEqual(resp.status_code, 201)
 #
 #     def test_user_login_token(self):
 #         """Text a token was generated"""

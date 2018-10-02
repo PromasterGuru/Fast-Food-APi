@@ -24,17 +24,13 @@
 #         self.assertEqual(self.app.testing, True)
 #         self.assertNotEqual(self.app.testing, False)
 #
-#     def test_meals_model_has_record(self):
-#         """Test the meals data structure"""
+#     def test_meals_model_is_empty_initially(self):
+#         """Test the food orders data structure is initially empty"""
 #         self.assertNotEqual(len(self.orders.get_menu()), 0)
 #
-#     def test_orders_model_has_record(self):
-#         """Test the food orders data structure"""
+#     def test_orders_model_is_empty_initially(self):
+#         """Test the food orders data structure is initially empty"""
 #         self.assertNotEqual(len(self.orders.get_orders()), 0)
-#
-#     def test_users_mdel_has_record(self):
-#         """Test the users data structure"""
-#         self.assertNotEqual(len(self.orders.get_users()), 0)
 #
 # # if __name__ == '__main__':
 # #     unittest.main()
