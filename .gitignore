@@ -2,7 +2,6 @@ __pycache__/
 htmlcov
 venv
 cover
-.instance
 .env
 .coverage
 *.pyc

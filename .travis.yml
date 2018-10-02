@@ -1,10 +1,5 @@
 language: python
 
-env:
-  - export DATABASE_URL='postgresql://postgres:postgres@localhost/fastfoodfast'
-  - export DATABASE_TEST_URL='postgresql://postgres:postgres@localhost/fastfoodfast_testdb'
-  - export FLASK_ENV='development'
-
 python:
   - "3.6"
 
@@ -13,19 +8,17 @@ install:
   - pip install coveralls
   - pip install nose
 
-services:
-  - postgresql
-
-addon:
-  -postgresql: "9.6"
-
 before_script:
-  - psql -c "CREATE DATABASE fastfoodfast;" -U postgres
-  - psql -c "CREATE USER promaster WITH PASSWORD 'postgres';" -U postgres
+  - psql -c 'create database fastfoodfast;' -U postgres
+  - psql -c 'create database fastfoodfast_testdb;' -U postgres
 
 script:
   - nosetests --with-coverage --cover-package=app
-  - coverage report
+
+env:
+  - DATABASE_URL='postgresql://postgres:postgres@localhost/fastfoodfast'
+  - DATABASE_TEST_URL='postgresql://postgres:postgres@localhost/fastfoodfast_testdb'
+  - APP_SETTINGS='development'
 
 after_success:
   - coveralls

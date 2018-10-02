@@ -26,7 +26,6 @@ class TestingConfig(Config):
     DEBUG = True
     TESTING = True
     DATABASE_URL = os.getenv('DATABASE_TEST_URL')
-    # DATABASE_URL = 'postgresql://postgres:postgres@localhost/fastfoodfast_testdb'
 
 
 class StaggingConfig(Config):
