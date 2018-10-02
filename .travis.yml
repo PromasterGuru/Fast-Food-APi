@@ -13,14 +13,14 @@ install:
   - pip install nose
 
 services:
-  -postgresql
+  - postgresql
 
 addon:
   -postgresql: "9.6"
 
 before_script:
-  -psql -c "CREATE DATABASE fastfoodfast;" -U postgres
-  -psql -c "CREATE USER promaster WITH PASSWORD 'postgres';" -U postgres
+  - psql -c "CREATE DATABASE fastfoodfast;" -U postgres
+  - psql -c "CREATE USER promaster WITH PASSWORD 'postgres';" -U postgres
 
 script:
   - nosetests --with-coverage --cover-package=app
