@@ -21,7 +21,7 @@ class FoodOrders():
             con.close()
             return ("%s registered successfully" %uname)
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error %s" %error)
+            return ("Error! report to the admin with reference:  %s " %error)
 
     def get_users(self):
         '''Return a dictionary of users'''
@@ -42,7 +42,7 @@ class FoodOrders():
                 cur_users.append(my_user)
             return cur_users
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error %s"%(error))
+            return ("Error! report to the admin with reference:  %s " %error)
 
     def create_menu(self, meal_id, name, description, unit_price):
         """Add new menu item"""
@@ -56,7 +56,7 @@ class FoodOrders():
             return "Menu item added successfully"
 
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! %s" %error)
+            return ("Error! report to the admin with reference:  %s " %error)
 
     def get_menu(self):
         """Get available menu"""
@@ -78,7 +78,7 @@ class FoodOrders():
                 menu.append(meal)
             return menu
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error %s" %error)
+            return ("Error! report to the admin with reference:  %s " %error)
 
     def create_orders(self, order_id, user_id, item, desc, qty, order_date, status):
         '''Add new orders'''
@@ -86,11 +86,11 @@ class FoodOrders():
         cursor = con.cursor()
         try:
             id = """SELECT*FROM Meals WHERE meal_id = %s;"""
-            meal = """SELECT*FROM Orders WHERE user_id = (%s)
-                                            and meal_id = (%s)
-                                            and description = (%s)
-                                            and quantity = (%s)
-                                            """
+            user_order_id = """SELECT order_id FROM Orders WHERE order_id = %s;"""
+            orders_id = """SELECT MAX(order_id) FROM Orders;"""
+            cursor.execute(user_order_id, [order_id])
+            if cursor.fetchall():
+                order_id +=  1
             query = """INSERT INTO Orders(
                                             order_id, user_id, meal_id, description,
                                             quantity, order_date, status
@@ -99,18 +99,15 @@ class FoodOrders():
             cursor.execute(id, [item])
             meals = cursor.fetchall()
             if not meals:
-                return "No meal found for meal_id %s"%(item)
-            cursor.execute(meal,(user_id, item, desc, qty))
-            if not cursor.fetchall() :
-                cursor.execute(query,(order_id, user_id, item, desc, qty, order_date, status))
-                con.commit()
-                cursor.close()
-                con.close()
-                return "Order successfully placed"
-            return "Dublicate order not allowed!"
+                return "No meal found for meal_id %s" %item
+            cursor.execute(query,(order_id, user_id, item, desc, qty, order_date, status))
+            con.commit()
+            cursor.close()
+            con.close()
+            return "Order successfully placed"
 
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! Request denied, please contact admin")
+            return ("Error! report to the admin with reference:  %s " %error)
 
     def get_orders(self):
         '''Return a list of food orders'''
@@ -135,7 +132,7 @@ class FoodOrders():
                 foods.append(order)
             return foods
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error %s" %error)
+            return ("Error! report to the admin with reference:  %s " %error)
 
     def update_orders(self, id, status):
         """Update order status"""
@@ -149,7 +146,7 @@ class FoodOrders():
             con.close()
             return ("Order successfully updated")
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! %s" %error)
+            return ("Error! report to the admin with reference:  %s " %error)
 
     def update_users(self, user_id, role):
         """Update order status"""
@@ -163,7 +160,7 @@ class FoodOrders():
             con.close()
             return "Users roles successfully changed to %s" %role
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! %s" %error)
+            return ("Error! report to the admin with reference:  %s " %error)
 
     def delete_orders(self, order_id):
         """Delete an order"""
@@ -177,7 +174,7 @@ class FoodOrders():
             con.close()
             return ("Order successfully deleted")
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! %s" %error)
+            return ("Error! report to the admin with reference:  %s " %error)
 
     def drop_tables(self):
         """Reset test db"""

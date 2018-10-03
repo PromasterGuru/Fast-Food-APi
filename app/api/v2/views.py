@@ -35,11 +35,7 @@ class Role(FoodOrders):
         else:
             role = user_id[0]['role']
             if role != "Admin":
-                result = {"Message": "Access Denied, the requested URL requires Admin privilege"}
-                response = jsonify(result)
-                response.status_code = 401
-                return response
-                # abort(401, {"Message": "Access Denied, the requested URL requires Admin privilege"})
+                abort(401, "Access Denied : The requested URL requires Admin privilege")
 
 
 class Register(Resource):
@@ -139,7 +135,7 @@ class Login(Resource):
                     #                     },os.getenv('SECRET')).decode('UTF-8')
                     result = {"Message": "Login successful, Welcome %s" %uname
                                                            , 'access_token': access_token
-                                                           , 'refresh_token': refresh_token
+                                                           # , 'refresh_token': refresh_token
                                                            }
                     response = jsonify(result)
                     response.status_code = 200 #OK
@@ -195,7 +191,7 @@ class Menu(Resource):
                                      +" another meal name"}
                 response = jsonify(result)
                 response.status_code = 403 #Request denied
-        return cur_user_id
+        return response
 
 class Users(Login):
     """Users role managment"""
@@ -243,9 +239,14 @@ class UserOrders(Resource):
         if order:
             user_order = [user_order for user_order in
                           order if user_order['user_id'] == cur_user_id]
-            result = {"Message": user_order}
-            response = jsonify(result)
-            response.status_code = 200 #OK
+            if not user_order:
+                result = {"Message": "No order history found."}
+                response = jsonify(result)
+                response.status_code = 404 #OK
+            else:
+                result = {"Message": user_order}
+                response = jsonify(result)
+                response.status_code = 200 #OK
         else:
             result = {"Message": "No orders found"}
             response = jsonify(result)
@@ -268,6 +269,7 @@ class UserOrders(Resource):
             user_id = cur_user_id
             item = request.json['meal_id']
             desc = request.json['description']
+            qty = request.json['quantity']
             meal = [meal for meal in self.orders.get_menu()
                     if meal['meal_id'] == item
                     ]
@@ -285,7 +287,6 @@ class UserOrders(Resource):
                      ]
             if not order:
                 order_id = len(orders) + 1
-                qty = request.json['quantity']
                 order_date = str(datetime.datetime.now())[:19]
                 status = "New"
                 result = self.orders.create_orders(order_id, user_id, item,
@@ -351,6 +352,8 @@ class AdminOrder(Resource):
             result = {"Message": "Invalid request, some fields are missing!"}
             response = jsonify(result)
             response.status_code = 400 #Bad request
+        elif not order_id:
+            result = {"Message": "Please enter your order id"}
         else:
             user_id = cur_user_id,
             item = request.json['meal_id']

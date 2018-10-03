@@ -22,12 +22,9 @@ def create_app(config_name):
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
     app.config['JWT_SECRET_KEY'] = 'jwt-secret-string'
-    JWTManager(app)
+    jwt = JWTManager(app)
     with app.app_context():
         DB().init_db()
-    # app_context = app.app_context()
-    # app_context.push()
-
     api = Api(app)
 
     api.add_resource(Login, '/auth/login')
