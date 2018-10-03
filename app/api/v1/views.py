@@ -101,7 +101,7 @@
 #                         "username": uname,
 #                         "password": password_hash
 #                     }
-#                     self.users.set_users(new_user)
+#                     self.users.add_user(new_user)
 #                     result = {"Message":"%s have been registered successfully"%(uname)}
 #                     response = jsonify(result)
 #                     response.status_code = 201 #Created
@@ -211,7 +211,7 @@
 #                     "order_date": order_date,
 #                     "status": status
 #                 }
-#                 self.orders.set_orders(new_order)
+#                 self.orders.create_orders(new_order)
 #                 result = {"Message": "Order placed successfully,"
 #                                      + " we will get back to you in 5 minutes"}
 #                 response = jsonify(result)
