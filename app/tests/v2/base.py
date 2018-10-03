@@ -320,7 +320,7 @@ class BaseTestCase(unittest.TestCase):
         """Update unexisting user"""
         access_token = self.get_user_token()
         return self.client().put(
-            '/users/98',
+            '/users/148',
             data=json.dumps(self.admin_role),
             headers={
                 "content-type": "application/json",
