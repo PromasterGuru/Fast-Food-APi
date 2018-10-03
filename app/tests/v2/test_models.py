@@ -8,29 +8,28 @@
 # #local import
 # from app.api.v2.models import FoodOrders
 # from app import create_app
+# from .base import BaseTestCase
 #
-# class TestModels(unittest.TestCase):
+# class TestModels(BaseTestCase):
 #     """Test storage models"""
 #
-#
-#     def setUp(self):
-#         """Define and Initalize test variables"""
-#         self.app = create_app(config_name="testing")
-#         self.orders = FoodOrders()
-#         self.client = self.app.test_client
 #
 #     def test_config(self):
 #         """Test configurations"""
 #         self.assertEqual(self.app.testing, True)
 #         self.assertNotEqual(self.app.testing, False)
 #
-#     def test_meals_model_is_empty_initially(self):
-#         """Test the food orders data structure is initially empty"""
-#         self.assertNotEqual(len(self.orders.get_menu()), 0)
+#     def test_meals_model_has_one_dummy_record(self):
+#         """Meals table has one record initially"""
+#         self.assertNotEqual(len(self.orders.get_menu()), 1)
 #
-#     def test_orders_model_is_empty_initially(self):
-#         """Test the food orders data structure is initially empty"""
-#         self.assertNotEqual(len(self.orders.get_orders()), 0)
+#     def test_orders_model_has_one_dummy_record(self):
+#         """Orders table has one record initially"""
+#         self.assertNotEqual(len(self.orders.get_orders()), 1)
+#
+#     def test_users_model_has_one_dummy_record(self):
+#         """Users table has one record initially"""
+#         self.assertNotEqual(len(self.orders.get_users()), 1)
 #
 # # if __name__ == '__main__':
 # #     unittest.main()

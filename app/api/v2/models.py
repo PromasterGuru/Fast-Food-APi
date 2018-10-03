@@ -9,13 +9,13 @@ class FoodOrders():
     '''Food order with storage and methods.'''
 
 
-    def add_user(self, email, uname, password):
+    def add_user(self, user_id, email, uname, password):
         '''Add new users'''
         con = DB().create_con()
         cursor = con.cursor()
         try:
-            query = """INSERT INTO Users(email, username, password) VALUES(%s, %s, %s);"""
-            cursor.execute(query, (email, uname, password))
+            query = """INSERT INTO Users(user_id, email, username, password) VALUES(%s, %s, %s, %s);"""
+            cursor.execute(query, (user_id, email, uname, password))
             con.commit()
             cursor.close()
             con.close()
@@ -67,6 +67,8 @@ class FoodOrders():
             query = """SELECT * FROM Meals;"""
             cursor.execute(query)
             orders = cursor.fetchall()
+            if not orders:
+                return "Sorry, we have no menu availlable for the moment."
             for item in orders:
                 meal = {}
                 meal['meal_id'] = item[0]
@@ -95,16 +97,17 @@ class FoodOrders():
                                         )
                        VALUES(%s, %s, %s, %s, %s, %s, %s);"""
             cursor.execute(id, [item])
-            if cursor.fetchall():
-                cursor.execute(meal,(user_id, item, desc, qty))
-                if not cursor.fetchall() :
-                    cursor.execute(query,(order_id, user_id, item, desc, qty, order_date, status))
-                    con.commit()
-                    cursor.close()
-                    con.close()
-                    return "Order successfully placed"
-                return "Dublicate order not allowed!"
-            return "No meal found for meal_id %s"%(item)
+            meals = cursor.fetchall()
+            if not meals:
+                return "No meal found for meal_id %s"%(item)
+            cursor.execute(meal,(user_id, item, desc, qty))
+            if not cursor.fetchall() :
+                cursor.execute(query,(order_id, user_id, item, desc, qty, order_date, status))
+                con.commit()
+                cursor.close()
+                con.close()
+                return "Order successfully placed"
+            return "Dublicate order not allowed!"
 
         except (Exception, psycopg2.DatabaseError) as error:
             return ("Error! Request denied, please contact admin")
@@ -118,6 +121,8 @@ class FoodOrders():
             query = """SELECT * FROM Orders;"""
             cursor.execute(query)
             orders = cursor.fetchall()
+            if not orders:
+                return "No orders found"
             for item in orders:
                 order = {}
                 order['order_id'] = item[0]

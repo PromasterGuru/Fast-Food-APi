@@ -91,8 +91,9 @@ class Register(Resource):
                 users = self.users.get_users()
                 user = [user for user in users if user['username'] == uname]
                 if not user:
+                    user_id = len(users) + 1
                     password_hash = generate_password_hash(password, method='sha256')
-                    result = {"Message":self.users.add_user(email, uname, password_hash)}
+                    result = {"Message":self.users.add_user(user_id, email, uname, password_hash)}
                     response = jsonify(result)
                     response.status_code = 201 #Created
                 else:
@@ -158,17 +159,10 @@ class Menu(Resource):
 
     def get(self):
         """Get available menu"""
-        menu = self.menu.get_menu()
-        if not menu:
-            result = {"Message": "Menu not availlable"}
-            response = jsonify(result)
-            response.status_code = 404 #Not found
-            return response
-        else:
-            result = {"Message": self.menu.get_menu()}
-            response = jsonify(result)
-            response.status_code = 200 #OK
-            return response
+        result = {"Message": self.menu.get_menu()}
+        response = jsonify(result)
+        response.status_code = 200 #OK
+        return response
 
     @jwt_required
     def post(self):
@@ -267,7 +261,7 @@ class UserOrders(Resource):
                 or "description" not in request.json
                 or "quantity" not in request.json
            ):
-            result = {"Message": result}#"Unknown request! some fields missing!"}
+            result = {"Message": "Unknown request! some fields missing!"}
             response = jsonify(result)
             response.status_code = 400 #Bad request
         else:
@@ -361,14 +355,6 @@ class AdminOrder(Resource):
             user_id = cur_user_id,
             item = request.json['meal_id']
             desc = request.json['description']
-            meal = [meal for meal in self.orders.get_menu()
-                    if meal['meal_id'] == item
-                    ]
-            if not meal:
-                result = {"Message": "Meal not found"}
-                response = jsonify(result)
-                response.status_code = 404 #Not found
-
             order = [order for order in self.orders.get_orders()
                      if(
                          order['user_id'] == user_id and
@@ -383,7 +369,10 @@ class AdminOrder(Resource):
                 result = self.orders.create_orders(order_id, user_id, item,
                                                    desc, qty, order_date, status)
                 response = jsonify({"Message": result})
-                response.status_code = 201 #Created
+                if result == "Order successfully placed":
+                    response.status_code = 201 #Created
+                else:
+                    response.status_code = 400 #Bad request
             else:
                 result = {"Message": "Dublicate orders not allowed!!"}
                 response = jsonify(result)
@@ -438,12 +427,7 @@ class AdminOrders(AdminOrder):
         cur_user_id = get_jwt_identity()
         self.roles.user_auth(cur_user_id)
         orders = self.orders.get_orders()
-        if not orders:
-            result = {"Message": "No orders found"}
-            response = jsonify(result)
-            response.status_code = 404 #Not found
-        else:
-            result = {"Message": orders}
-            response = jsonify(result)
-            response.status_code = 200 #OK
+        result = {"Message": orders}
+        response = jsonify(result)
+        response.status_code = 200 #OK
         return response

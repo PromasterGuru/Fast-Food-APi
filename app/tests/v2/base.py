@@ -19,9 +19,9 @@ class BaseTestCase(unittest.TestCase):
         self.client = self.app.test_client
 
         self.valid_user = {
-            "email": "pmutondo16@gmail.com",
-            "username": "Promaster2020",
-            "password": "Promaster2020"
+            "email": "pmutondo@gmail.com",
+            "username": "Promaster18",
+            "password": "Promaster18"
         }
 
         self.invalid_user1 = {
@@ -48,11 +48,6 @@ class BaseTestCase(unittest.TestCase):
             "email": "pmutondo16@gmail.com",
             "username": "Promaster2018",
             "password": "promaster2018"
-        }
-        self.invalid_user6 = {
-            "email": "pmutondo12@gmail.com",
-            "username": "Promaster",
-            "password": "Promaster2018"
         }
         self.valid_login = {
             "username": "Promaster",
@@ -86,14 +81,32 @@ class BaseTestCase(unittest.TestCase):
             	"quantity": 3
         }
         self.invalid_order = {
-            "meal_id": "",
+            "id": 1,
             "description": "Pumkin juice with no added sugar, "
                            +"Address: Stall Mall, Moi Aven.",
             "quantity": 2
         }
 
+        self.invalid_order2 = {
+            "meal_id": "",
+            "description": "Orange juice with no added sugar, "
+                           +"Address: Mama Ngina Streetn.",
+            "quantity": 2
+        }
+        self.invalid_order3 = {
+            "meal_id": 98,
+            "description": "Lemon juice with no added sugar, "
+                           +"Address: Afri Mall, Pro Aven.",
+            "quantity": 2
+        }
         self.update_order = {
             "status": "Complete"
+        }
+        self.admin_role = {
+            "role": "Admin"
+        }
+        self.invalid_user_role = {
+            "Admin": "Admin"
         }
 
     def register_user(self):
@@ -140,9 +153,20 @@ class BaseTestCase(unittest.TestCase):
 
     def register_existing_user(self):
         """Register new user with dummy data"""
+        self.client().post(
+            'auth/signup',
+            data=json.dumps(self.valid_user),
+            content_type='application/json')
         return self.client().post(
             'auth/signup',
-            data=json.dumps(self.invalid_user6),
+            data=json.dumps(self.valid_user),
+            content_type='application/json')
+
+    def bad_registration_request(self):
+        """Missing and important field"""
+        return self.client().post(
+            'auth/signup',
+            data=json.dumps(self.valid_login),
             content_type='application/json')
 
     def user_login(self):
@@ -234,12 +258,144 @@ class BaseTestCase(unittest.TestCase):
                 "Authorization": access_token
             })
 
+    def update_unexisting_order_status(self):
+        """Admin user can update orders"""
+        access_token = self.get_user_token()
+        return self.client().put(
+            '/orders/98',
+            data=json.dumps(self.update_order),
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
     def delete_order(self):
         """Admin user can delete orders"""
         access_token = self.get_user_token()
         return self.client().delete(
             '/orders/1',
             data=json.dumps(self.order),
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
+    def invalid_order_data(self):
+        """Bad request order format"""
+        access_token = self.get_user_token()
+        return self.client().post(
+            '/users/orders',
+            data=json.dumps(self.invalid_order),
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
+    def update_user_role(self):
+        """Bad request order format"""
+        access_token = self.get_user_token()
+        self.client().post(
+            'auth/signup',
+            data=json.dumps(self.valid_user),
+            content_type='application/json')
+        return self.client().put(
+            '/users/2',
+            data=json.dumps(self.admin_role),
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
+    def update_user_role_bad_request(self):
+        """Bad request format for user role update"""
+        access_token = self.get_user_token()
+        return self.client().put(
+            '/users/2',
+            data=json.dumps(self.invalid_user_role),
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
+    def update_unexisting_user_role(self):
+        """Update unexisting user"""
+        access_token = self.get_user_token()
+        return self.client().put(
+            '/users/98',
+            data=json.dumps(self.admin_role),
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
+    def invalid_delete_request(self):
+        """Invalid delete option"""
+        access_token = self.get_user_token()
+        return self.client().delete(
+            '/orders/98',
+            data=json.dumps(self.order),
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
+    def view_all_orders(self):
+        """Admin can view all orders"""
+        access_token = self.get_user_token()
+        return self.client().get(
+            '/orders/',
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+    def specific_order(self):
+        """Admin can view a specific order"""
+        access_token = self.get_user_token()
+        return self.client().get(
+            '/orders/1',
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
+    def unexisting_order(self):
+        """Admin attempt to view unexisting order"""
+        access_token = self.get_user_token()
+        return self.client().get(
+            '/orders/34',
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
+    def place_specific_order(self):
+        """Place a specific order"""
+        access_token = self.get_user_token()
+        return self.client().post(
+            '/orders/23',
+            data=json.dumps(self.order),
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
+    def place_invalid_specific_order(self):
+        """Place a specific order"""
+        access_token = self.get_user_token()
+        return self.client().post(
+            '/orders/23',
+            data=json.dumps(self.invalid_order),
+            headers={
+                "content-type": "application/json",
+                "Authorization": access_token
+            })
+
+    def order_unexisting_meal(self):
+        """Attempt to order unexisting meal"""
+        access_token = self.get_user_token()
+        return self.client().post(
+            '/orders/23',
+            data=json.dumps(self.invalid_order3),
             headers={
                 "content-type": "application/json",
                 "Authorization": access_token
