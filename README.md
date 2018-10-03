@@ -44,7 +44,7 @@ Creates a set of API endpoints already defined below and use data structures to 
   <tr>
     <td>Add a specific order</td>
     <td>POST</td>
-    <td>/orders/<orderId></td>
+    <td>/orders/orderId</td>
   </tr>
   <tr>
     <td>Register for a new account</td>
@@ -54,7 +54,7 @@ Creates a set of API endpoints already defined below and use data structures to 
   <tr>
     <td>Update the status  of an order</td>
     <td>PUT</td>
-    <td>orders/<orderId></td>
+    <td>orders/orderId</td>
   </tr>
   <tr>
     <td>Get available menu</td>
@@ -65,6 +65,11 @@ Creates a set of API endpoints already defined below and use data structures to 
     <td>Add a meal option to the menu.</td>
     <td>POST</td>
     <td>/menu</td>
+  </tr>
+  <tr>
+    <td>pdate user role</td>
+    <td>PUT</td>
+    <td>/users/userId</td>
   </tr>
 </table>
 
@@ -87,7 +92,7 @@ Creates a set of API endpoints already defined below and use data structures to 
 <i>export DATABASE_URL='postgresql://postgres:postgres@localhost/fastfoodfast'</i><br>
 <i>flask run<i>
 <h2>Test the app on postman (Challenge 2)</h2>
-<i>Use the url provided in the first table with each endpoint starting from</i><br>
+<i>Use the urls provided in the first table with each endpoint starting from</i><br>
 a. Register to get an account<br>
-b. Login to generate a 'x-access-token'<br>
+b. Login to generate a token<br>
 c. Use this token to access any other endpoint

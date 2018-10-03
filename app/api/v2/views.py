@@ -196,10 +196,13 @@ class Menu(Resource):
 class Users(Login):
     """Users role managment"""
 
+    roles = Role()
+    
     @jwt_required
     def put(self, user_id):
         """Update user role"""
-        cur_user_id = get_jwt_identity()
+        user_id = get_jwt_identity()
+        self.roles.user_auth(user_id)
         if(not request.json
            or not 'role' in request.json
            ):
