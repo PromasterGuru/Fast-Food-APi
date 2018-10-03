@@ -5,7 +5,6 @@ import unittest
 
 # Local imports
 from app import create_app
-from app.api.v2.views import Role
 from app.api.v2.models import FoodOrders
 
 class BaseTestCase(unittest.TestCase):

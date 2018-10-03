@@ -13,7 +13,7 @@ before_script:
   - psql -c 'create database fastfoodfast_testdb;' -U postgres
 
 script:
-  - nosetests --with-coverage --cover-package=app
+  - nosetests --with-coverage --cover-package=app/tests
 
 after_success:
   - coveralls
