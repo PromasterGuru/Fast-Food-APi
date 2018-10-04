@@ -84,8 +84,8 @@ Creates a set of API endpoints already defined below and use data structures to 
 3. Install virtual environment(if not installed): `pip install virtualenv`
 4. Create and activate virtual environment: `virtualenv venv` then `source venv/bin/activate`
 5. Install project dependencies :`pip install -r requirements.txt`
-6. Start postgres and create a database by the name fastfoodfast
-  `sudo -su postgres psql postgres`
+6. Start postgres and create a database by the name fastfoodfast: <br>
+  `sudo -su postgres psql postgres`<br>
   `psql -c 'create database fastfoodfast;' -U postgres`
   
 ### Test the app on postman
