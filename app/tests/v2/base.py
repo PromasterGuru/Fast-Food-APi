@@ -111,88 +111,88 @@ class BaseTestCase(unittest.TestCase):
     def register_user(self):
         """Register new user with dummy data"""
         return self.client().post(
-            'auth/signup',
+            '/api/v2/auth/signup',
             data=json.dumps(self.valid_user),
             content_type='application/json')
 
     def register_user_invalid_email(self):
         """Register new user with dummy data"""
         return self.client().post(
-            'auth/signup',
+            '/api/v2/auth/signup',
             data=json.dumps(self.invalid_user1),
             content_type='application/json')
 
     def register_user_invalid_username(self):
         """Register new user with dummy data"""
         return self.client().post(
-            'auth/signup',
+            '/api/v2/auth/signup',
             data=json.dumps(self.invalid_user2),
             content_type='application/json')
 
     def register_user_short_password(self):
         """Register new user with dummy data"""
         return self.client().post(
-            'auth/signup',
+            '/api/v2/auth/signup',
             data=json.dumps(self.invalid_user3),
             content_type='application/json')
 
     def register_user_non_numeric_password(self):
         """Register new user with dummy data"""
         return self.client().post(
-            'auth/signup',
+            '/api/v2/auth/signup',
             data=json.dumps(self.invalid_user4),
             content_type='application/json')
 
     def register_user_password_has_no_caps(self):
         """Register new user with dummy data"""
         return self.client().post(
-            'auth/signup',
+            '/api/v2/auth/signup',
             data=json.dumps(self.invalid_user5),
             content_type='application/json')
 
     def register_existing_user(self):
         """Register new user with dummy data"""
         self.client().post(
-            'auth/signup',
+            '/api/v2/auth/signup',
             data=json.dumps(self.valid_user),
             content_type='application/json')
         return self.client().post(
-            'auth/signup',
+            '/api/v2/auth/signup',
             data=json.dumps(self.valid_user),
             content_type='application/json')
 
     def bad_registration_request(self):
         """Missing and important field"""
         return self.client().post(
-            'auth/signup',
+            '/api/v2/auth/signup',
             data=json.dumps(self.valid_login),
             content_type='application/json')
 
     def user_login(self):
         """User can login"""
         return self.client().post(
-            'auth/login',
+            '/api/v2/auth/login',
             data=json.dumps(self.valid_login),
             content_type='application/json')
 
     def user_invalid_login1(self):
         """User cannot login"""
         return self.client().post(
-            'auth/login',
+            '/api/v2/auth/login',
             data=json.dumps(self.invalid_login1),
             content_type='application/json')
 
     def user_invalid_login2(self):
         """User cannot login"""
         return self.client().post(
-            'auth/login',
+            '/api/v2/auth/login',
             data=json.dumps(self.invalid_login2),
             content_type='application/json')
 
     def user_invalid_login3(self):
         """User cannot login"""
         return self.client().post(
-            'auth/login',
+            '/api/v2/auth/login',
             data=json.dumps(self.invalid_login3),
             content_type='application/json')
 
@@ -209,7 +209,7 @@ class BaseTestCase(unittest.TestCase):
     def view_menu_options(self):
         """View availlable menu options"""
         return self.client().get(
-            '/menu',
+            '/api/v2/menu',
             content_type='application/json')
 
 
@@ -217,7 +217,7 @@ class BaseTestCase(unittest.TestCase):
         """View availlable menu options"""
         access_token = self.get_user_token()
         return self.client().post(
-            '/menu',
+            '/api/v2/menu',
             data=json.dumps(self.menu),
             headers={
                 "content-type": "application/json",
@@ -228,7 +228,7 @@ class BaseTestCase(unittest.TestCase):
         """User can post and order"""
         access_token = self.get_user_token()
         return self.client().post(
-            '/users/orders',
+            '/api/v2/users/orders',
             data=json.dumps(self.order),
             headers={
                 "content-type": "application/json",
@@ -239,7 +239,7 @@ class BaseTestCase(unittest.TestCase):
         """User can view their orders"""
         access_token = self.get_user_token()
         return self.client().get(
-            '/users/orders',
+            '/api/v2/users/orders',
             data=json.dumps(self.order),
             headers={
                 "content-type": "application/json",
@@ -250,7 +250,7 @@ class BaseTestCase(unittest.TestCase):
         """Admin user can update orders"""
         access_token = self.get_user_token()
         return self.client().put(
-            '/orders/1',
+            '/api/v2/orders/1',
             data=json.dumps(self.update_order),
             headers={
                 "content-type": "application/json",
@@ -261,7 +261,7 @@ class BaseTestCase(unittest.TestCase):
         """Admin user can update orders"""
         access_token = self.get_user_token()
         return self.client().put(
-            '/orders/98',
+            '/api/v2/orders/98',
             data=json.dumps(self.update_order),
             headers={
                 "content-type": "application/json",
@@ -272,7 +272,7 @@ class BaseTestCase(unittest.TestCase):
         """Admin user can delete orders"""
         access_token = self.get_user_token()
         return self.client().delete(
-            '/orders/1',
+            '/api/v2/orders/1',
             data=json.dumps(self.order),
             headers={
                 "content-type": "application/json",
@@ -283,7 +283,7 @@ class BaseTestCase(unittest.TestCase):
         """Bad request order format"""
         access_token = self.get_user_token()
         return self.client().post(
-            '/users/orders',
+            '/api/v2/users/orders',
             data=json.dumps(self.invalid_order),
             headers={
                 "content-type": "application/json",
@@ -298,7 +298,7 @@ class BaseTestCase(unittest.TestCase):
             data=json.dumps(self.valid_user),
             content_type='application/json')
         return self.client().put(
-            '/users/2',
+            '/api/v2/users/1',
             data=json.dumps(self.admin_role),
             headers={
                 "content-type": "application/json",
@@ -309,7 +309,7 @@ class BaseTestCase(unittest.TestCase):
         """Bad request format for user role update"""
         access_token = self.get_user_token()
         return self.client().put(
-            '/users/2',
+            '/api/v2/users/2',
             data=json.dumps(self.invalid_user_role),
             headers={
                 "content-type": "application/json",
@@ -320,7 +320,7 @@ class BaseTestCase(unittest.TestCase):
         """Update unexisting user"""
         access_token = self.get_user_token()
         return self.client().put(
-            '/users/98',
+            '/api/v2/users/98',
             data=json.dumps(self.admin_role),
             headers={
                 "content-type": "application/json",
@@ -331,7 +331,7 @@ class BaseTestCase(unittest.TestCase):
         """Invalid delete option"""
         access_token = self.get_user_token()
         return self.client().delete(
-            '/orders/98',
+            '/api/v2/orders/98',
             data=json.dumps(self.order),
             headers={
                 "content-type": "application/json",
@@ -342,7 +342,7 @@ class BaseTestCase(unittest.TestCase):
         """Admin can view all orders"""
         access_token = self.get_user_token()
         return self.client().get(
-            '/orders/',
+            '/api/v2/orders/',
             headers={
                 "content-type": "application/json",
                 "Authorization": access_token
@@ -351,7 +351,7 @@ class BaseTestCase(unittest.TestCase):
         """Admin can view a specific order"""
         access_token = self.get_user_token()
         return self.client().get(
-            '/orders/1',
+            '/api/v2/orders/1',
             headers={
                 "content-type": "application/json",
                 "Authorization": access_token
@@ -361,7 +361,7 @@ class BaseTestCase(unittest.TestCase):
         """Admin attempt to view unexisting order"""
         access_token = self.get_user_token()
         return self.client().get(
-            '/orders/34',
+            '/api/v2/orders/34',
             headers={
                 "content-type": "application/json",
                 "Authorization": access_token
@@ -371,7 +371,7 @@ class BaseTestCase(unittest.TestCase):
         """Place a specific order"""
         access_token = self.get_user_token()
         return self.client().post(
-            '/orders/23',
+            '/api/v2/orders/23',
             data=json.dumps(self.order),
             headers={
                 "content-type": "application/json",
@@ -382,7 +382,7 @@ class BaseTestCase(unittest.TestCase):
         """Place a specific order"""
         access_token = self.get_user_token()
         return self.client().post(
-            '/orders/23',
+            '/api/v2/orders/23',
             data=json.dumps(self.invalid_order),
             headers={
                 "content-type": "application/json",
@@ -393,7 +393,7 @@ class BaseTestCase(unittest.TestCase):
         """Attempt to order unexisting meal"""
         access_token = self.get_user_token()
         return self.client().post(
-            '/orders/23',
+            '/api/v2/orders/23',
             data=json.dumps(self.invalid_order3),
             headers={
                 "content-type": "application/json",

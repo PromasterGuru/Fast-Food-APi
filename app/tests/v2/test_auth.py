@@ -26,7 +26,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], 'Promaster18 registered successfully')
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 201)
-        self.assertNotEqual(resp.status_code, 200)
 
     def test_registration_for_existing_user(self):
         """Dublicate accounts"""
@@ -35,7 +34,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], 'Account is already registered')
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 401)
-        self.assertNotEqual(resp.status_code, 201)
 
     def test_user_registration_with_invalid_email(self):
         """User registration with invalid email, missing '@'  """
@@ -45,7 +43,6 @@ class TestAuthentication(BaseTestCase):
                   +"missing '@' or '.'")
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 201)
 
     def test_user_registration_with_invalid_username(self):
         """User registration with invalid username, less than 6 characters"""
@@ -54,7 +51,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], "Username must contain atleast 6 characters!!")
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 201)
 
     def test_user_registration_with_short_password(self):
         """User registration with password having less than 8 characters"""
@@ -63,7 +59,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], "password must have more than 8 characters!!")
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 201)
 
     def test_user_registration_password_missing_numeric_characters(self):
         """User registration when passord has no numeric characters"""
@@ -72,7 +67,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], "password must contain a at least one number!!")
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 201)
 
     def test_user_registration_password_missing_capital_letters(self):
         """User registration when passord has no capital letters"""
@@ -81,7 +75,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], "password must contain a capital letter!!")
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 201)
 
     def test_bad_request_for_registration(self):
         """User registration without important fields"""
@@ -91,8 +84,6 @@ class TestAuthentication(BaseTestCase):
                                              +"please confirm and fill them")
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 201)
-
 
     def test_user_login_token(self):
         """Text a token was generated"""
@@ -107,10 +98,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], 'Login successful, Welcome Promaster')
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 200)
-        self.assertNotEqual(resp.status_code, 201)
-        self.assertNotEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 404)
-        self.assertNotEqual(resp.status_code, 401)
 
     def test_user_login_without_username_or_password(self):
         """Test user login with invalid credentials"""
@@ -119,10 +106,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], 'User not verified, Please login again!')
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 401)
-        self.assertNotEqual(resp.status_code, 201)
-        self.assertNotEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 404)
-        self.assertNotEqual(resp.status_code, 200)
 
     def test_user_login_without_username_or_password(self):
         """Test user login with invalid credentials"""
@@ -131,10 +114,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], 'User not verified, Please login again!')
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 401)
-        self.assertNotEqual(resp.status_code, 201)
-        self.assertNotEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 404)
-        self.assertNotEqual(resp.status_code, 200)
 
     def test_user_login_without_username_or_password(self):
         """Test user login with invalid credentials"""
@@ -143,10 +122,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], 'Username not registered, please register!!!')
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 401)
-        self.assertNotEqual(resp.status_code, 201)
-        self.assertNotEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 404)
-        self.assertNotEqual(resp.status_code, 200)
 
     def test_user_login_without_username_or_password(self):
         """Test user login with invalid credentials"""
@@ -155,10 +130,6 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(response['Message'], 'Username or password was incorrect!')
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 401)
-        self.assertNotEqual(resp.status_code, 201)
-        self.assertNotEqual(resp.status_code, 400)
-        self.assertNotEqual(resp.status_code, 404)
-        self.assertNotEqual(resp.status_code, 200)
 
     def test_update_user_roles(self):
         """Admin can update user role"""

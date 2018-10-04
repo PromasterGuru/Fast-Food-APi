@@ -31,7 +31,6 @@ class TestRouteCases(BaseTestCase):
         response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(response['Message'], 'Menu item added successfully')
         self.assertEqual(resp.status_code, 201)
-        self.assertNotEqual(resp.status_code, 401)
 
     def test_user_can_post_an_order(self):
         """Any user can post an order"""
