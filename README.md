@@ -78,28 +78,17 @@ Creates a set of API endpoints already defined below and use data structures to 
   </tr>
 </table>
 
-<h2> How to compile and test it locally </h2>
-1. Clone the project:<br>`git clone <a href ="https://github.com/PromasterGuru/Fast-Food-APi.git"></a>`<br>
-2. cd to project directory: <br>`cd Fast-Food-API-Endpoints`<br>
-3. Install virtual environment(if not installed):<br> `pip install virtualenv`<br>
-4. Create and activate virtual environment:<br>`virtualenv venv`<br>`source venv/bin/activate`<br>
-5. Install project dependencies :`pip install -r requirements.txt`<br>
-6. Start postgres and create a database by the name `fastfoodfast`<br>
-`sudo -su postgres psql postgres`
-`psql -c 'create database fastfoodfast;' -U postgres`
-<i>Having started Challenge 3, creating the database will help to solve some error that might occur<br> due to missing database.</i>
-`sudo service postgresql start`<br>
-`sudo -su postgres`<br>
-`create database fastfoodfast`
-
-<h5>Start Flask server on terminal using the following command</h5>
-<i>The following commands can also be included in a .env file tongether with the secret key</i><br>
-`export FLASK_APP=run.py`<br>
-`export FLASK_ENV='testing'`<br>
-`export DATABASE_URL='postgresql://postgres:postgres@localhost/fastfoodfast'`<br>
-`flask run`
-<h2>Test the app on postman2)</h2>
-<i>Use the url provided in the first table with each endpoint starting from</i><br>
+### How to compile and test it locally
+1. Clone the project: `git clone https://github.com/PromasterGuru/Fast-Food-APi.git">`
+2. cd to project directory: `cd Fast-Food-API-Endpoints`
+3. Install virtual environment(if not installed): `pip install virtualenv`
+4. Create and activate virtual environment: `virtualenv venv` then `source venv/bin/activate`
+5. Install project dependencies :`pip install -r requirements.txt`
+6. Start postgres and create a database by the name fastfoodfast
+  `sudo -su postgres psql postgres`
+  `psql -c 'create database fastfoodfast;' -U postgres`
+  
+### Test the app on postman
 a. Register to get an account<br>
 b. Login to generate a  token<br>
 c. Use this token to access the endpoints endpoint where necessary
