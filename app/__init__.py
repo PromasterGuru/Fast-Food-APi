@@ -25,7 +25,7 @@ def create_app(config_name):
     jwt = JWTManager(app)
     with app.app_context():
         DB().init_db()
-    api = Api(app)
+    api = Api(app, prefix="/api/v2")
 
     api.add_resource(Login, '/auth/login')
     api.add_resource(Register, '/auth/signup')
