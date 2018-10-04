@@ -92,3 +92,6 @@ Creates a set of API endpoints already defined below and use data structures to 
 a. Register to get an account<br>
 b. Login to generate a  token<br>
 c. Use this token to access the endpoints endpoint where necessary
+
+### APP documentation
+<a href="https://app.swaggerhub.com/apis/PromasterGuru1/AndelaFastFoodFast/1.0">Fast Food Fast Documentation</a>
