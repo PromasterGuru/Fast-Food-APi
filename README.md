@@ -87,7 +87,7 @@ Creates a set of API endpoints already defined below and use data structures to 
 6. Start postgres and create a database by the name fastfoodfast: <br>
   `sudo -su postgres psql postgres`<br>
   `psql -c 'create database fastfoodfast;' -U postgres`
-  
+
 ### Test the app on postman
 a. Register to get an account<br>
 b. Login to generate a  token<br>
