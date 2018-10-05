@@ -107,7 +107,7 @@ class TestRouteCases(BaseTestCase):
         """Admin order request in bad format"""
         resp = self.place_invalid_specific_order()
         response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(response['Message'], "Invalid request, some fields are missing!")
+        self.assertEqual(response['Message'], "Invalid request, bad request format!")
         self.assertEqual(resp.status_code, 400)
 
     def test_admin_order_unexisting_meal(self):

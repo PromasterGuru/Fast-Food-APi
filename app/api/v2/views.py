@@ -60,11 +60,8 @@ class Register(Resource):
             uname = request.json['username']
             password = request.json['password']
 
-            if (re.search('[@]', email) is None
-                    or re.search('[.]', email) is None
-               ):
-                result = {"Message": "You entered an invalid email address, "
-                                     +"missing '@' or '.'"}
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                result = {"Message": "Your email address is invalid!"}
                 response = jsonify(result)
                 response.status_code = 400 #Bad request
             elif len(uname) < 6:
@@ -393,20 +390,19 @@ class AdminOrder(Resource):
         if not self.validate(order_id):
             result = {"Message": "No order found for id %d" %order_id}
             response = jsonify(result)
-            response.status_code = 404 #Not found
+            response.status_code = 404 #Not founde
         else:
             order_status = ["New", "Processing", "Cancelled", "Complete"]
             if request.json['status'] in order_status:
                 status = request.json['status']
                 result = {"Message": self.orders.update_orders(order_id, status)}
                 response = jsonify(result)
-                response.status_code = 200 #OK
             else:
                 result = {"Message": "Unkown order status. Availlable status are"
                           +" " +str(order_status)}
                 response = jsonify(result)
                 response.status_code = 200 #OK
-            return response
+        return response
 
     @jwt_required
     def delete(self, order_id):

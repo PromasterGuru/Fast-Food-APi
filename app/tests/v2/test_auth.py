@@ -36,11 +36,10 @@ class TestAuthentication(BaseTestCase):
         self.assertEqual(resp.status_code, 401)
 
     def test_user_registration_with_invalid_email(self):
-        """User registration with invalid email, missing '@'  """
+        """User registration with invalid email"""
         resp = self.register_user_invalid_email()
         response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(response['Message'], "You entered an invalid email address, "
-                  +"missing '@' or '.'")
+        self.assertEqual(response['Message'], "Your email address is invalid!")
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 400)
 
