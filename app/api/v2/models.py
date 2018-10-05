@@ -21,7 +21,7 @@ class FoodOrders():
             con.close()
             return ("%s registered successfully" %uname)
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! report to the admin with error reference:  %s " %error)
+            return ("A similar request is being processed, change the user ID!")
 
     def get_users(self):
         '''Return a dictionary of users'''
@@ -42,7 +42,7 @@ class FoodOrders():
                 cur_users.append(my_user)
             return cur_users
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! report to the admin with error reference:  %s " %error)
+            return ("A similar request is being processed, change the user ID!")
 
     def create_menu(self, meal_id, name, description, unit_price):
         """Add new menu item"""
@@ -56,7 +56,7 @@ class FoodOrders():
             return "Menu item added successfully"
 
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! report to the admin with error reference:  %s " %error)
+            return ("A similar request is being processed, change the menu ID!")
 
     def get_menu(self):
         """Get available menu"""
@@ -78,7 +78,7 @@ class FoodOrders():
                 menu.append(meal)
             return menu
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! report to the admin with error reference:  %s " %error)
+            return ("A similar request is being processed, change the menu ID!")
 
     def create_orders(self, order_id, user_id, item, addr, qty, order_date, status):
         '''Add new orders'''
@@ -108,7 +108,7 @@ class FoodOrders():
             return "Order successfully placed"
 
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! report to the admin with error reference:  %s " %error)
+            return ("A similar request is being processed, change the order ID!")
 
     def get_orders(self):
         '''Return a list of food orders'''
@@ -133,7 +133,7 @@ class FoodOrders():
                 foods.append(order)
             return foods
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! report to the admin with error eference:  %s " %error)
+            return ("A similar request is being processed, change the order ID!")
 
     def update_orders(self, id, status):
         """Update order status"""
@@ -147,7 +147,7 @@ class FoodOrders():
             con.close()
             return ("Order successfully updated")
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! report to the admin with error reference:  %s " %error)
+            return ("A similar request is being processed, change the order ID!")
 
     def update_users(self, user_id, role):
         """Update order status"""
@@ -161,7 +161,7 @@ class FoodOrders():
             con.close()
             return "Users roles successfully changed to %s" %role
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! report to the admin with error reference:  %s " %error)
+            return ("A similar request is being processed, change the user ID!")
 
     def delete_orders(self, order_id):
         """Delete an order"""
@@ -175,7 +175,7 @@ class FoodOrders():
             con.close()
             return ("Order successfully deleted")
         except (Exception, psycopg2.DatabaseError) as error:
-            return ("Error! report to the admin with error reference:  %s " %error)
+            return ("A similar request is being processed, change the order ID!")
 
     def drop_tables(self):
         """Reset test db"""

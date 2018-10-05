@@ -79,8 +79,7 @@ class DB():
 
             menu_option = """INSERT INTO Meals(meal_id, meal_name, description,
                                          unit_price)
-                             VALUES(1, 'Pizza', 'Meat and veggie options to keep
-                              the whole family smiling.', 2.55);"""
+                             VALUES(1, 'Pizza', 'Meat and veggie options.', 2.55);"""
 
             order = """INSERT INTO Orders(order_id, user_id, meal_id, address,
                                           quantity, order_date, status) VALUES(1, 1,
