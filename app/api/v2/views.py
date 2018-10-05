@@ -399,7 +399,10 @@ class AdminOrder(Resource):
             response.status_code = 404 #Not found
         else:
             order_status = ["New", "Processing", "Cancelled", "Complete"]
-            if request.json['status'] in order_status:
+            if not request.json or 'status' not in request.json:
+                result = {"Message": "Status not found"}
+                response = jsonify(result)
+            elif request.json['status'] in order_status:
                 status = request.json['status']
                 result = {"Message": self.orders.update_orders(order_id, status)}
                 response = jsonify(result)
