@@ -76,26 +76,23 @@ class BaseTestCase(unittest.TestCase):
         }
         self.order = {
             	"meal_id": 1,
-            	"description": "Eight trapias and one solomon fish",
+            	"address": "Juja Gachororo",
             	"quantity": 3
         }
         self.invalid_order = {
             "id": 1,
-            "description": "Pumkin juice with no added sugar, "
-                           +"Address: Stall Mall, Moi Aven.",
+            "address": "Nys-Utalii",
             "quantity": 2
         }
 
         self.invalid_order2 = {
             "meal_id": "",
-            "description": "Orange juice with no added sugar, "
-                           +"Address: Mama Ngina Streetn.",
+            "address": "Kabage-Muhotetu",
             "quantity": 2
         }
         self.invalid_order3 = {
             "meal_id": 98,
-            "description": "Lemon juice with no added sugar, "
-                           +"Address: Afri Mall, Pro Aven.",
+            "address": "Machakos kazonweni, 785499 Jungle st.",
             "quantity": 2
         }
         self.update_order = {

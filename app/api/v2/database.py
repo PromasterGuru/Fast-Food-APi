@@ -47,7 +47,7 @@ class DB():
             order_id serial PRIMARY KEY,
             user_id integer NOT NULL,
             meal_id integer NOT NULL,
-            description varchar(250),
+            address varchar(50),
             quantity int NOT NULL,
             order_date date NOT NULL,
             status varchar(15),
@@ -82,9 +82,9 @@ class DB():
                              VALUES(1, 'Pizza', 'Meat and veggie options to keep
                               the whole family smiling.', 2.55);"""
 
-            order = """INSERT INTO Orders(order_id, user_id, meal_id, description,
+            order = """INSERT INTO Orders(order_id, user_id, meal_id, address,
                                           quantity, order_date, status) VALUES(1, 1,
-                                          1, 'Grade 5 hot and pasted Pizza', 5,
+                                          1, '123 High St. Thika', 5,
                                           '2018-09-30 22:57:36','New');"""
 
             data = [admin_user, menu_option, order]

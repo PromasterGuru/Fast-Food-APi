@@ -47,9 +47,9 @@ class Register(Resource):
     def post(self):
         '''Register new users'''
         if (not request.json
-                or not "email" in request.json
-                or not "username" in request.json
-                or not "password" in request.json
+                or "email" not in request.json
+                or "username" not in request.json
+                or "password" not in request.json
            ):
             result = {"Message": "Some very important fields are missing, "
                                  +"please confirm and fill them"}
@@ -109,9 +109,9 @@ class Login(Resource):
     def post(self):
         '''Login'''
         if (not request.json
-                or not request.json['username']
-                or not request.json['password']):
-            result = {"Message": "User not verified, Please login again!"}
+                or "username" not in request.json
+                or "password" not in request.json):
+            result = {"Message": "Username or password not found in the reques!"}
             response = jsonify(result)
             response.status_code = 401 #OK
         else:
@@ -201,7 +201,7 @@ class Users(Login):
         """Update user role"""
         cur_user_id = get_jwt_identity()
         if(not request.json
-           or not 'role' in request.json
+           or 'role' not  in request.json
            ):
             result = {"Message": "Please enter all the required fields"}
             response = jsonify(result)
@@ -259,7 +259,7 @@ class UserOrders(Resource):
         cur_user_id = get_jwt_identity()
         if (not request.json
                 or  "meal_id"  not in request.json
-                or "description" not in request.json
+                or "address" not in request.json
                 or "quantity" not in request.json
            ):
             result = {"Message": "Unknown request! some fields missing!"}
@@ -268,7 +268,7 @@ class UserOrders(Resource):
         else:
             user_id = cur_user_id
             item = request.json['meal_id']
-            desc = request.json['description']
+            address = request.json['address']
             qty = request.json['quantity']
             meal = [meal for meal in self.orders.get_menu()
                     if meal['meal_id'] == item
@@ -282,7 +282,7 @@ class UserOrders(Resource):
                      if(
                          order['user_id'] == user_id and
                          order['meal_id'] == item and
-                         order['description'] == desc
+                         order['address'] == address
                          )
                      ]
             if not order:
@@ -290,7 +290,7 @@ class UserOrders(Resource):
                 order_date = str(datetime.datetime.now())[:19]
                 status = "New"
                 result = self.orders.create_orders(order_id, user_id, item,
-                                                   desc, qty, order_date, status)
+                                                   address, qty, order_date, status)
                 response = jsonify({"Message": result})
                 response.status_code = 201 #Created
             else:
@@ -346,41 +346,44 @@ class AdminOrder(Resource):
         self.roles.user_auth(cur_user_id)
         if (not request.json
                 or "meal_id" not in request.json
-                or "description" not in request.json
+                or "address" not in request.json
                 or "quantity" not in request.json
            ):
-            result = {"Message": "Invalid request, some fields are missing!"}
+            result = {"Message": "Invalid request, bad request format!"}
             response = jsonify(result)
             response.status_code = 400 #Bad request
-        elif not order_id:
-            result = {"Message": "Please enter your order id"}
+            return response
         else:
             user_id = cur_user_id,
             item = request.json['meal_id']
-            desc = request.json['description']
+            address = request.json['address']
+            qty = request.json['quantity']
             order = [order for order in self.orders.get_orders()
                      if(
                          order['user_id'] == user_id and
                          order['meal_id'] == item and
-                         order['description'] == desc
+                         order['quantity'] == qty
                          )
                      ]
             if not order:
-                qty = request.json['quantity']
                 order_date = str(datetime.datetime.now())[:19]
                 status = "New"
                 result = self.orders.create_orders(order_id, user_id, item,
-                                                   desc, qty, order_date, status)
+                                                   address, qty, order_date, status)
                 response = jsonify({"Message": result})
                 if result == "Order successfully placed":
                     response.status_code = 201 #Created
+                elif (result == "No meal found for meal_id %s"%order_id):
+                    response.status_code = 404 #Not found
                 else:
+
                     response.status_code = 400 #Bad request
+                return response
             else:
                 result = {"Message": "Dublicate orders not allowed!!"}
                 response = jsonify(result)
                 response.status_code = 400 #Bad request
-        return response
+                return response
 
     @jwt_required
     def put(self, order_id):
@@ -393,16 +396,17 @@ class AdminOrder(Resource):
             response.status_code = 404 #Not found
         else:
             order_status = ["New", "Processing", "Cancelled", "Complete"]
-            status = request.json['status']
-            if status in order_status:
+            if request.json['status'] in order_status:
+                status = request.json['status']
                 result = {"Message": self.orders.update_orders(order_id, status)}
                 response = jsonify(result)
                 response.status_code = 200 #OK
             else:
-                result = {"Message": "Unkown order status"}
+                result = {"Message": "Unkown order status. Availlable status are"
+                          +" " +str(order_status)}
                 response = jsonify(result)
                 response.status_code = 200 #OK
-        return response
+            return response
 
     @jwt_required
     def delete(self, order_id):
