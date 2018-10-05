@@ -281,10 +281,10 @@ class UserOrders(Resource):
             orders = self.orders.get_orders()
             order = [order for order in orders
                      if(
-                         order['user_id'] == user_id and
                          order['meal_id'] == item and
                          order['address'] == address and
-                         order['status'] == 'New'
+                         order['quantity'] == qty and
+                         order['status'] == "New"
                          )
                      ]
             if not order:
@@ -356,23 +356,23 @@ class AdminOrder(Resource):
             response.status_code = 400 #Bad request
             return response
         else:
-            user_id = cur_user_id,
-            item = request.json['meal_id']
-            address = request.json['address']
-            qty = request.json['quantity']
+            id = cur_user_id,
+            meal_id = request.json['meal_id']
+            user_address = request.json['address']
+            quantity = request.json['quantity']
             order = [order for order in self.orders.get_orders()
                      if(
-                         order['user_id'] == user_id and
-                         order['meal_id'] == item and
-                         order['quantity'] == qty and
-                         order['status'] == 'New'
+                         order['meal_id'] == meal_id and
+                         order['address'] == user_address and
+                         order['quantity'] == quantity and
+                         order['status'] == "New"
                          )
                      ]
             if not order:
                 order_date = str(datetime.datetime.now())[:19]
-                status = "New"
-                result = self.orders.create_orders(order_id, user_id, item,
-                                                   address, qty, order_date, status)
+                order_status = "New"
+                result = self.orders.create_orders(order_id, id, meal_id, user_address,
+                                                   quantity, order_date, order_status)
                 response = jsonify({"Message": result})
                 if result == "Order successfully placed":
                     response.status_code = 201 #Created
