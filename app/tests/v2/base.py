@@ -23,8 +23,8 @@ class BaseTestCase(unittest.TestCase):
             "password": "Promaster18"
         }
 
-        self.invalid_user1 = {
-            "email": "pmutondo16@gmailcom",
+        self.invalid_email = {
+            "email": "pmutondo16gmailcom",
             "username": "Promaster2018",
             "password": "Promaster2018"
         }
@@ -116,13 +116,13 @@ class BaseTestCase(unittest.TestCase):
         """Register new user with dummy data"""
         return self.client().post(
             '/api/v2/auth/signup',
-            data=json.dumps(self.invalid_user1),
+            data=json.dumps(self.invalid_email),
             content_type='application/json')
 
     def register_user_invalid_username(self):
         """Register new user with dummy data"""
         return self.client().post(
-            '/api/v2/auth/signup',
+            'api/v2/auth/signup',
             data=json.dumps(self.invalid_user2),
             content_type='application/json')
 
