@@ -396,7 +396,7 @@ class AdminOrder(Resource):
         if not self.validate(order_id):
             result = {"Message": "No order found for id %d" %order_id}
             response = jsonify(result)
-            response.status_code = 404 #Not founde
+            response.status_code = 404 #Not found
         else:
             order_status = ["New", "Processing", "Cancelled", "Complete"]
             if request.json['status'] in order_status:

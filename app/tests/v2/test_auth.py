@@ -134,7 +134,7 @@ class TestAuthentication(BaseTestCase):
         """Admin can update user role"""
         resp = self.update_user_role()
         response = json.loads(resp.data.decode('utf-8'))
-        self.assertEqual(response['Message'], 'Users roles successfully changed to Admin')
+        self.assertEqual(response['Message'], 'User role successfully changed to Admin')
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 200)
 

@@ -159,7 +159,7 @@ class FoodOrders():
             con.commit()
             cursor.close()
             con.close()
-            return "Users roles successfully changed to %s" %role
+            return "User role successfully changed to %s" %role
         except (Exception, psycopg2.DatabaseError) as error:
             return ("A similar request is being processed, change the user ID!")
 
