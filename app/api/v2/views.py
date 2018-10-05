@@ -82,7 +82,11 @@ class Register(Resource):
                 response.status_code = 400 #Bad request
             else:
                 users = self.users.get_users()
-                user = [user for user in users if user['username'] == uname]
+                user = [user for user in users
+                        if user['username'] == uname
+                        or user['email'] == email
+                        ]
+
                 if not user:
                     user_id = len(users) + 1
                     password_hash = generate_password_hash(password, method='sha256')
@@ -108,7 +112,7 @@ class Login(Resource):
         if (not request.json
                 or "username" not in request.json
                 or "password" not in request.json):
-            result = {"Message": "Username or password not found in the reques!"}
+            result = {"Message": "Username or password not found in the request!"}
             response = jsonify(result)
             response.status_code = 401 #OK
         else:
@@ -279,7 +283,8 @@ class UserOrders(Resource):
                      if(
                          order['user_id'] == user_id and
                          order['meal_id'] == item and
-                         order['address'] == address
+                         order['address'] == address and
+                         order['status'] == 'New'
                          )
                      ]
             if not order:
@@ -359,7 +364,8 @@ class AdminOrder(Resource):
                      if(
                          order['user_id'] == user_id and
                          order['meal_id'] == item and
-                         order['quantity'] == qty
+                         order['quantity'] == qty and
+                         order['status'] == 'New'
                          )
                      ]
             if not order:
