@@ -50,6 +50,7 @@ class Register(Resource):
                 or "email" not in request.json
                 or "username" not in request.json
                 or "password" not in request.json
+                or "cpassword" not in request.json
            ):
             result = {"Message": "Some very important fields are missing, "
                                  +"please confirm and fill them"}
@@ -59,6 +60,7 @@ class Register(Resource):
             email = request.json['email']
             uname = request.json['username']
             password = request.json['password']
+            cpassword = request.json['cpassword']
 
             if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
                 result = {"Message": "Your email address is invalid!"}
@@ -78,6 +80,10 @@ class Register(Resource):
                 response.status_code = 400 #Bad request
             elif re.search('[A-Z]', password) is None:
                 result = {"Message": "password must contain a capital letter!!"}
+                response = jsonify(result)
+                response.status_code = 400 #Bad request
+            elif password != cpassword:
+                result = {"Message": "Your password does not match"}
                 response = jsonify(result)
                 response.status_code = 400 #Bad request
             else:
