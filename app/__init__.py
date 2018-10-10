@@ -6,6 +6,7 @@ Initalize the app and load configurations
 
 from flask_api import FlaskAPI
 from flask_restful import Api
+from flask import redirect
 from flask_jwt_extended import JWTManager
 
 
@@ -25,6 +26,11 @@ def create_app(config_name):
     jwt = JWTManager(app)
     with app.app_context():
         DB().init_db()
+
+    @app.route('/')
+    def index():
+        return redirect('https://app.swaggerhub.com/apis/PromasterGuru/AndelaFastFoodFast/1.0')
+
     api = Api(app, prefix="/api/v2")
 
     api.add_resource(Login, '/auth/login')
