@@ -2,10 +2,9 @@ __pycache__/
 htmlcov
 venv
 cover
-.instance
 .env
 .coverage
 *.pyc
 *.py[cod]
 *$py.class
-.pytest_cache/
+.pytest_cache

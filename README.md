@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/PromasterGuru/Fast-Food-API-Endpoints.svg?branch=bg-updates-160539838)](https://travis-ci.org/PromasterGuru/Fast-Food-API-Endpoints)  [![Coverage Status](https://coveralls.io/repos/github/PromasterGuru/Fast-Food-API-Endpoints/badge.svg?branch=bg-updates-160539838)](https://coveralls.io/github/PromasterGuru/Fast-Food-API-Endpoints?branch=bg-updates-160539838)   [![Maintainability](https://api.codeclimate.com/v1/badges/997b349df6f552d352b5/maintainability)](https://codeclimate.com/github/PromasterGuru/Fast-Food-API-Endpoints/maintainability)    [![GitHub license](https://img.shields.io/github/license/PromasterGuru/Fast-Food-APi.svg)](https://github.com/PromasterGuru/Fast-Food-APi/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/PromasterGuru/Fast-Food-API-Endpoints.svg?branch=dev)](https://travis-ci.org/PromasterGuru/Fast-Food-API-Endpoints)  [![Coverage Status](https://coveralls.io/repos/github/PromasterGuru/Fast-Food-API-Endpoints/badge.svg?branch=dev)](https://coveralls.io/github/PromasterGuru/Fast-Food-API-Endpoints?branch=dev)   [![Maintainability](https://api.codeclimate.com/v1/badges/997b349df6f552d352b5/maintainability)](https://codeclimate.com/github/PromasterGuru/Fast-Food-API-Endpoints/maintainability)    [![GitHub license](https://img.shields.io/github/license/PromasterGuru/Fast-Food-APi.svg)](https://github.com/PromasterGuru/Fast-Food-APi/blob/master/LICENSE)
 
 
 # Fast-Food-APi
@@ -17,63 +17,80 @@ Creates a set of API endpoints already defined below and use data structures to 
     <th>Endpoint</th>
   </tr>
   <tr>
-    <td>Get all the orders</td>
-    <td>GET</td>
-    <td>/api/v1/orders</td>
-  </tr>
-  </tr>
-  <tr>
-    <td>Fetch a specific order</td>
-    <td>GET</td>
-    <td>/api/v1/orders/order_id<order_id></td>
-  </tr>
-  <tr>
-    <td>Place a new order</td>
+    <td>Register a user</td>
     <td>POST</td>
-    <td>/api/v1/orders</td>
+    <td>/auth/signup</td>
   </tr>
   <tr>
-    <td>Update the status of an order</td>
+    <td>Login a user</td>
+    <td>POST</td>
+    <td>/auth/login</td>
+  </tr>
+  <tr>
+    <td>Place an order for food.</td>
+    <td>POST</td>
+    <td>/users/orders</td>
+  </tr>
+  <tr>
+    <td>Get the order history for a particular user.</td>
+    <td>GET</td>
+    <td>/users/orders</td>
+  </tr>
+  <tr>
+    <td>Get all orders</td>
+    <td>GET</td>
+    <td>/orders/</td>
+  </tr>
+  <tr>
+    <td>Add a specific order</td>
+    <td>POST</td>
+    <td>/orders/orderId</td>
+  </tr>
+  <tr>
+    <td>Update the status  of an order</td>
     <td>PUT</td>
-    <td>/api/v1/orders/order_id</td>
+    <td>orders/orderId</td>
   </tr>
   <tr>
-    <td>Delete a specific order</td>
-    <td>DELETE</td>
-    <td>/api/v1/orders/order_id</td>
-  </tr>
-  <tr>
-    <td>Register for a new account</td>
-    <td>POST</td>
-    <td>/api/v1/register</td>
-  </tr>
-  <tr>
-    <td>Login to an account</td>
+    <td>Get available menu</td>
     <td>GET</td>
-    <td>/api/v1/login></td>
+    <td>/menu</td>
+  </tr>
+  <tr>
+    <td>Add a meal option to the menu.</td>
+    <td>POST</td>
+    <td>/menu</td>
+  </tr>
+  <tr>
+    <td>Delete order.</td>
+    <td>DELETE</td>
+    <td>/menu</td>
+  </tr>
+  <tr>
+    <td>Add a meal option to the menu.</td>
+    <td>POST</td>
+    <td>/orders/orderId</td>
+  </tr>
+  <tr>
+    <td>Update user</td>
+    <td>PUT</td>
+    <td>/users/userId</td>
   </tr>
 </table>
 
-<h2> How to compile and test it locally </h2>
-1. Clone the project:<br>git clone <a href ="https://github.com/PromasterGuru/Fast-Food-APi.git"></a></i><br>
-2. cd to project directory: <br><i>cd Fast-Food-API-Endpoints</i><br>
-3. Install virtual environment(if not installed):<br> <i>pip install virtualenv</i><br>
-4. Create and activate virtual environment:<i>virtualenv venv<i><br><i>source venv/bin/activate</i><br>
-5. Install project dependencies :<i>pip install -r requirements.txt</i><br>
-6. Start postgres and create a database by the name <i>fastfoodfast</i><br>
-<i>Having started Challenge 3, creating the database will help to solve some error that might occur<br> due to missing database.</i>
-<i>sudo service postgresql start</i><br>
-<i>sudo -su postgres</i><br>
-<i>create database fastfoodfast</i>
+### How to compile and test it locally
+1. Clone the project: `git clone https://github.com/PromasterGuru/Fast-Food-APi.git">`
+2. cd to project directory: `cd Fast-Food-API-Endpoints`
+3. Install virtual environment(if not installed): `pip install virtualenv`
+4. Create and activate virtual environment: `virtualenv venv` then `source venv/bin/activate`
+5. Install project dependencies :`pip install -r requirements.txt`
+6. Start postgres and create a database by the name fastfoodfast: <br>
+  `sudo -su postgres psql postgres`<br>
+  `psql -c 'create database fastfoodfast;' -U postgres`
 
-<h5>Start Flask server on terminal using the following command</h5>
-<i>The following commands can also be included in a .env file tongether with the secret key</i><br>
-<i>export FLASK_APP=run.py</i><br>
-<i>export FLASK_ENV='testing'</i><br>
-<i>export DATABASE_URL='postgresql://postgres:postgres@localhost/fastfoodfast'</i><br>
-<i>flask run<i>
-<h2>Test the app on postman (Challenge 2)</h2>
-<i>Use the url provided in the first table with each endpoint starting from</i><br>
+### Test the app on postman
 a. Register to get an account<br>
-b. Login to generate a 'x-access-token'<br>
-c. Use this token to access any other endpoint
+b. Login to generate a  token<br>
+c. Use this token to access the endpoints endpoint where necessary
+
+__[Project Documentation](https://app.swaggerhub.com/apis/PromasterGuru/AndelaFastFoodFast/1.0)__

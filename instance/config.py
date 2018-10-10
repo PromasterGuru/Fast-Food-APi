@@ -13,7 +13,7 @@ class Config():
 class DevelopmentConfig(Config):
     """Enable Debugging mode in Development"""
     DEBUG = True
-
+    DATABASE_URL = os.getenv('DATABASE_URL')
 
 class ProductionConfig(Config):
     """Disable Debugging and Testing mode in Production"""
@@ -25,6 +25,7 @@ class TestingConfig(Config):
     """Enable Debugging and Testing mode in Testing"""
     DEBUG = True
     TESTING = True
+    DATABASE_URL = os.getenv('DATABASE_TEST_URL')
 
 
 class StaggingConfig(Config):
@@ -32,7 +33,7 @@ class StaggingConfig(Config):
     DEBUG = True
 
 
-my_app_config = {
+app_config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
     'testing': TestingConfig,
