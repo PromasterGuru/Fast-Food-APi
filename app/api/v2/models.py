@@ -90,7 +90,8 @@ class FoodOrders():
             orders_id = """SELECT MAX(order_id) FROM Orders;"""
             cursor.execute(user_order_id, [order_id])
             if cursor.fetchall():
-                order_id +=  1
+                cursor.execute(orders_id)
+                order_id = cursor.fetchall() + 1;
             query = """INSERT INTO Orders(
                                             order_id, user_id, meal_id, address,
                                             quantity, order_date, status
