@@ -22,7 +22,6 @@ from .models import FoodOrders
 class Role(FoodOrders):
     """Get user role"""
 
-
     def user_auth(self, id):
         """"Authorize user based on their roles"""
         users = self.get_users()
@@ -446,6 +445,22 @@ class AdminOrders(AdminOrder):
         self.roles.user_auth(cur_user_id)
         orders = self.orders.get_orders()
         result = {"Message": orders}
+        response = jsonify(result)
+        response.status_code = 200 #OK
+        return response
+
+class UserRole(Resource):
+    """Get user role"""
+
+    users = FoodOrders()
+
+    @jwt_required
+    def get(self):
+        """Get user role"""
+        cur_users = self.users.get_users()
+        user_id = get_jwt_identity()
+        id = [id for id in cur_users if id['user_id'] == user_id]
+        result = {"Message": id[0]['role']}
         response = jsonify(result)
         response.status_code = 200 #OK
         return response
