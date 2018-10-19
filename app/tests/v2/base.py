@@ -51,7 +51,8 @@ class BaseTestCase(unittest.TestCase):
         self.invalid_user5 = {
             "email": "pmutondo16@gmail.com",
             "username": "Promaster2018",
-            "password": "promaster2018"
+            "password": "promaster2018",
+            "cpassword": "promaster2018"
         }
         self.valid_login = {
             "username": "Promaster",
