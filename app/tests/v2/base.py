@@ -20,28 +20,33 @@ class BaseTestCase(unittest.TestCase):
         self.valid_user = {
             "email": "pmutondo@gmail.com",
             "username": "Promaster18",
-            "password": "Promaster18"
+            "password": "Promaster18",
+            "cpassword": "Promaster18"
         }
 
         self.invalid_email = {
             "email": "pmutondo16gmailcom",
             "username": "Promaster2018",
-            "password": "Promaster2018"
+            "password": "Promaster2018",
+            "cpassword": "Promaster18"
         }
         self.invalid_user2 = {
             "email": "pmutondo16@gmail.com",
             "username": "Prom",
-            "password": "Promaster2018"
+            "password": "Promaster2018",
+            "cpassword": "Promaster18"
         }
         self.invalid_user3 = {
             "email": "pmutondo16@gmail.com",
             "username": "Promaster2018",
-            "password": "Prom"
+            "password": "Prom",
+            "cpassword": "Prom"
         }
         self.invalid_user4 = {
             "email": "pmutondo16@gmail.com",
             "username": "Promaster2019",
-            "password": "Promasterpaul"
+            "password": "Promasterpaul",
+            "cpassword": "Promasterpaul"
         }
         self.invalid_user5 = {
             "email": "pmutondo16@gmail.com",
@@ -50,19 +55,23 @@ class BaseTestCase(unittest.TestCase):
         }
         self.valid_login = {
             "username": "Promaster",
-            "password": "Promaster2018"
+            "password": "Promaster2018",
+            "cpassword": "Promaster18"
         }
         self.invalid_login1 = {
             "username": "Promaster2018",
-            "password": ""
+            "password": "",
+            "cpassword": ""
         }
         self.invalid_login2 = {
             "username": "Paul",
-            "password": "Promaster2018"
+            "password": "Promaster2018",
+            "cpassword": "Promaster18"
         }
         self.invalid_login3 = {
             "username": "Promaster",
-            "password": "Paul18"
+            "password": "Paul18",
+            "cpassword": "Paul18"
         }
         self.menu = {
             "name": "Chapo",
