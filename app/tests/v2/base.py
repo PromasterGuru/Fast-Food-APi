@@ -54,6 +54,12 @@ class BaseTestCase(unittest.TestCase):
             "password": "promaster2018",
             "cpassword": "promaster2018"
         }
+        self.invalid_user6 = {
+            "email": "pmutondo16@gmail.com",
+            "username": "Promaster2018",
+            "password": "Promaster2018",
+            "cpassword": "Promaster2017"
+        }
         self.valid_login = {
             "username": "Promaster",
             "password": "Promaster2018",
@@ -155,6 +161,13 @@ class BaseTestCase(unittest.TestCase):
         return self.client().post(
             '/api/v2/auth/signup',
             data=json.dumps(self.invalid_user5),
+            content_type='application/json')
+
+    def password_mismatch_registration(self):
+        """Password does not match"""
+        return self.client().post(
+            '/api/v2/auth/signup',
+            data=json.dumps(self.invalid_user6),
             content_type='application/json')
 
     def register_existing_user(self):
