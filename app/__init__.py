@@ -15,7 +15,7 @@ from instance.config import app_config
 # from .api.v1.views import Login, Register, Orders, Order
 from .api.v2.database import DB
 from .api.v2.views import Login, Register, UserOrders,\
- AdminOrders, AdminOrder, Menu, Users
+ AdminOrders, AdminOrder, Menu, Users, UserRole
 
 def create_app(config_name):
     """Wraps the creation of a new Flask object"""
@@ -40,6 +40,7 @@ def create_app(config_name):
     api.add_resource(AdminOrder, '/orders/<int:order_id>')
     api.add_resource(Menu, '/menu')
     api.add_resource(Users, '/users/<int:user_id>')
+    api.add_resource(UserRole, '/user/role/')
 
 
     return app

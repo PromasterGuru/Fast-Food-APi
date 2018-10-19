@@ -20,49 +20,65 @@ class BaseTestCase(unittest.TestCase):
         self.valid_user = {
             "email": "pmutondo@gmail.com",
             "username": "Promaster18",
-            "password": "Promaster18"
+            "password": "Promaster18",
+            "cpassword": "Promaster18"
         }
 
         self.invalid_email = {
             "email": "pmutondo16gmailcom",
             "username": "Promaster2018",
-            "password": "Promaster2018"
+            "password": "Promaster2018",
+            "cpassword": "Promaster18"
         }
         self.invalid_user2 = {
             "email": "pmutondo16@gmail.com",
             "username": "Prom",
-            "password": "Promaster2018"
+            "password": "Promaster2018",
+            "cpassword": "Promaster18"
         }
         self.invalid_user3 = {
             "email": "pmutondo16@gmail.com",
             "username": "Promaster2018",
-            "password": "Prom"
+            "password": "Prom",
+            "cpassword": "Prom"
         }
         self.invalid_user4 = {
             "email": "pmutondo16@gmail.com",
             "username": "Promaster2019",
-            "password": "Promasterpaul"
+            "password": "Promasterpaul",
+            "cpassword": "Promasterpaul"
         }
         self.invalid_user5 = {
             "email": "pmutondo16@gmail.com",
             "username": "Promaster2018",
-            "password": "promaster2018"
+            "password": "promaster2018",
+            "cpassword": "promaster2018"
+        }
+        self.invalid_user6 = {
+            "email": "pmutondo16@gmail.com",
+            "username": "Promaster2018",
+            "password": "Promaster2018",
+            "cpassword": "Promaster2017"
         }
         self.valid_login = {
             "username": "Promaster",
-            "password": "Promaster2018"
+            "password": "Promaster2018",
+            "cpassword": "Promaster18"
         }
         self.invalid_login1 = {
             "username": "Promaster2018",
-            "password": ""
+            "password": "",
+            "cpassword": ""
         }
         self.invalid_login2 = {
             "username": "Paul",
-            "password": "Promaster2018"
+            "password": "Promaster2018",
+            "cpassword": "Promaster18"
         }
         self.invalid_login3 = {
             "username": "Promaster",
-            "password": "Paul18"
+            "password": "Paul18",
+            "cpassword": "Paul18"
         }
         self.menu = {
             "name": "Chapo",
@@ -145,6 +161,13 @@ class BaseTestCase(unittest.TestCase):
         return self.client().post(
             '/api/v2/auth/signup',
             data=json.dumps(self.invalid_user5),
+            content_type='application/json')
+
+    def password_mismatch_registration(self):
+        """Password does not match"""
+        return self.client().post(
+            '/api/v2/auth/signup',
+            data=json.dumps(self.invalid_user6),
             content_type='application/json')
 
     def register_existing_user(self):

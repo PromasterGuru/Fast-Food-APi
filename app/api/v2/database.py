@@ -49,7 +49,7 @@ class DB():
             meal_id integer NOT NULL,
             address varchar(50),
             quantity int NOT NULL,
-            order_date date NOT NULL,
+            order_date timestamp NOT NULL,
             status varchar(15),
             FOREIGN KEY (user_id) REFERENCES users(user_id)
             ON DELETE CASCADE ON UPDATE CASCADE,

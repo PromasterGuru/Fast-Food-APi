@@ -75,6 +75,14 @@ class TestAuthentication(BaseTestCase):
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 400)
 
+    def test_user_registration_with_wrong_confirmation_password(self):
+        """User registration when does not match"""
+        resp = self.password_mismatch_registration()
+        response = json.loads(resp.data.decode('utf-8'))
+        self.assertEqual(response['Message'], "Your password does not match")
+        self.assertTrue(resp.content_type == 'application/json')
+        self.assertEqual(resp.status_code, 400)
+
     def test_bad_request_for_registration(self):
         """User registration without important fields"""
         resp = self.bad_registration_request()
