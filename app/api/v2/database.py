@@ -39,6 +39,7 @@ class DB():
         meals_tb = """CREATE TABLE IF NOT EXISTS Meals(
             meal_id serial PRIMARY KEY,
             meal_name varchar(25) NOT NULL,
+            image varchar(150) NOT NULL,
             description varchar(250) NOT NULL,
             unit_price decimal(5,2) NOT NULL
         );"""
@@ -77,9 +78,9 @@ class DB():
                                    'sha256$2Um2FMvb$e61bf3f929321a777fb3d52b28f384b2a8c48c4810380279d1f933a767b14e62',
                                     'Admin');"""
 
-            menu_option = """INSERT INTO Meals(meal_id, meal_name, description,
+            menu_option = """INSERT INTO Meals(meal_id, meal_name, image, description,
                                          unit_price)
-                             VALUES(1, 'Pizza', 'Meat and veggie options.', 2.55);"""
+                             VALUES(1, 'Pizza', 'food1.jpeg', 'Meat and veggie options.', 2.55);"""
 
             order = """INSERT INTO Orders(order_id, user_id, meal_id, address,
                                           quantity, order_date, status) VALUES(1, 1,

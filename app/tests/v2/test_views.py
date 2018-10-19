@@ -22,7 +22,6 @@ class TestRouteCases(BaseTestCase):
     def test_user_can_view_menu(self):
         """Any user can view the menu"""
         resp = self.view_menu_options()
-        response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 200)
 
     def test_admin_user_can_add_menu_options(self):
@@ -42,7 +41,6 @@ class TestRouteCases(BaseTestCase):
     def test_users_can_view_their_orders(self):
         """Any user can view their previous orders"""
         resp = self.view_orders()
-        response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 200)
 
     def test_users_can_updated_their_order_status(self):
@@ -85,14 +83,12 @@ class TestRouteCases(BaseTestCase):
     def test_admin_can_view_all_orders(self):
         """View orders"""
         resp = self.view_all_orders()
-        response = json.loads(resp.data.decode('utf-8'))
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 200)
 
     def test_admin_can_place_a_specific_order(self):
         """Admin can place an orders"""
         resp = self.place_specific_order()
-        response = json.loads(resp.data.decode('utf-8'))
         self.assertTrue(resp.content_type == 'application/json')
         self.assertEqual(resp.status_code, 201)
 
@@ -120,7 +116,6 @@ class TestRouteCases(BaseTestCase):
     def test_admin_can_get_a_specific_order(self):
         """Admin get a specific order"""
         resp = self.specific_order()
-        response = json.loads(resp.data.decode('utf-8'))
         self.assertEqual(resp.status_code, 200)
 
     def test_attempt_to_view_unexisting_order(self):

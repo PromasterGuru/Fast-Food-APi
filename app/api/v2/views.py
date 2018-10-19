@@ -173,6 +173,7 @@ class Menu(Resource):
         self.roles.user_auth(cur_user_id)
         if (not request.json
                 or "name" not in request.json
+                or "image_url" not in request.json
                 or 'description' not in request.json
                 or 'unit_price' not in request.json
            ):
@@ -183,12 +184,13 @@ class Menu(Resource):
         else:
             menu_id  = len(self.menu.get_menu())+1
             meal_name = request.json['name']
+            image = request.json['image_url']
             meal_desc = request.json['description']
             meal_price = request.json['unit_price']
             meals = self.menu.get_menu()
             meal = [meal for meal in meals if meal['meal_name'] == meal_name]
             if not meal:
-                result = {"Message": self.menu.create_menu(menu_id, meal_name, meal_desc, meal_price)}
+                result = {"Message": self.menu.create_menu(menu_id, meal_name, image, meal_desc, meal_price)}
                 response = jsonify(result)
                 response.status_code = 201 #Created
                 return response

@@ -82,6 +82,7 @@ class BaseTestCase(unittest.TestCase):
         }
         self.menu = {
             "name": "Chapo",
+            "image_url": "food.jpg",
             "description": "Meat and veggie options to keep the whole family smiling.",
             "unit_price": 2.50
         }
