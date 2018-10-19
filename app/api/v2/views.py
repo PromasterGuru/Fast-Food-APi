@@ -49,7 +49,6 @@ class Register(Resource):
                 or "email" not in request.json
                 or "username" not in request.json
                 or "password" not in request.json
-                or "cpassword" not in request.json
            ):
             result = {"Message": "Some very important fields are missing, "
                                  +"please confirm and fill them"}
